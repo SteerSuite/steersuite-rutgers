@@ -68,6 +68,12 @@ namespace SteerLib {
 		/// The desired speed the agent would try to maintain during this goal
 		float desiredSpeed;
 
+		/***Options for animation with curves***/
+		/// Time to be at target location
+		float targetTime;
+		/// Tangant (speed) at each target
+		Util::Vector targetTangent;
+
 		/// @name Specific goal data
 		/// @brief Only one of these is valid at any time, depending on the value of goalType and targetIsRandom.
 		//@{

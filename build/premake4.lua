@@ -467,8 +467,27 @@ project "pprAI"
 		"util"
 	}
 		
+	buildoptions("-std=c++0x -ggdb" )
+
+project "curveAI"
+	language "C++"
+	kind "SharedLib"
+	includedirs { 
+		"../steerlib/include",
+		"../curveAI/include",
+		"../external",
+		"../util/include",
+	}
+	files { 
+		"../curveAI/include/*.h",
+		"../curveAI/src/*.cpp"
+	}
+	links { 
+		"steerlib",
+		"util"
+	}
+		
 	buildoptions("-std=c++0x -ggdb" )	
-	
 	
 project "kdtree"
 	language "C++"

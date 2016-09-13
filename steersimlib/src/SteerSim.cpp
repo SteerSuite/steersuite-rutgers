@@ -371,6 +371,8 @@ void initializeOptionsFromCommandLine( int argc, char **argv, SimulationOptions 
 	opts.addOption( "-parameterDemo", NULL, OPTION_DATA_TYPE_NO_DATA, 0, &simulationOptions.globalOptions.parameterDemo, true);
 	opts.addOption( "-noTweakBar", NULL, OPTION_DATA_TYPE_NO_DATA, 0, &simulationOptions.globalOptions.noTweakBar, true);
 	opts.addOption( "-dataFileName", &simulationOptions.globalOptions.dataFileName, OPTION_DATA_TYPE_STRING);
+	opts.addOption("-animateCamera", NULL, OPTION_DATA_TYPE_NO_DATA, 0, &simulationOptions.guiOptions.animateCamera, true);
+	opts.addOption("-animatecamera", NULL, OPTION_DATA_TYPE_NO_DATA, 0, &simulationOptions.guiOptions.animateCamera, true);
 
 	// Dummy option parsing for the special options, but these are used earlier and ignored at this point.
 	opts.addOption("-config", NULL, OPTION_DATA_TYPE_STRING);

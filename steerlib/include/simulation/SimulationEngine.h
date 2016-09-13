@@ -229,6 +229,8 @@ namespace SteerLib {
 		virtual void removeCommand(const std::string & commandName);
 		virtual void runCommand(const std::string & commandName);
 
+		virtual void setCameraViewTestCase(const SteerLib::CameraView&);
+
 		//@}
 
 

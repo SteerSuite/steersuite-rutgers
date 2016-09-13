@@ -185,6 +185,8 @@ namespace SteerLib {
 		/// Throws an exception on behalf of a module; this may be necessary if C++ exceptions are not properly thrown across library boundaries.
 		virtual void throwException(const std::string & errorMessage) = 0;
 		//@}
+
+		virtual void setCameraViewTestCase(const SteerLib::CameraView&) = 0;
 	};
 
 } // end namespace SteerLib

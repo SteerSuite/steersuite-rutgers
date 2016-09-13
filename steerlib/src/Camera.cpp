@@ -29,6 +29,14 @@ const float Camera::INTERPOLATE_TIME = 0.7f;
 Camera::Camera()
 {
 	m_pois.clear();
+
+	// Set curve type here
+	//curve.setType(Util::hermiteCurve);
+	curve.setType(Util::catmullCurve);
+
+	// Default to no animation (simulation engine can override this)
+	animateCamera = false;
+
 	reset();
 }
 
@@ -67,8 +75,8 @@ int Camera::addPointOfInterest(const Point & pos, const Point & lookat, const Ve
 	poi.up = up;
 
 	m_pois.push_back(poi);
-	
-	if(m_pois.size() == 1)
+
+	if (m_pois.size() == 1)
 	{
 		m_currentPoi = 0;
 		setView(m_pois[0]);
@@ -84,11 +92,11 @@ int Camera::addPointOfInterest(const Point & pos, const Point & lookat)
 
 void Camera::useNextPointOfInterest()
 {
-	if(m_pois.size() == 0)
+	if (m_pois.size() == 0)
 		return;
 
 	m_currentPoi++;
-	if(m_currentPoi >= (int)m_pois.size())
+	if (m_currentPoi >= (int)m_pois.size())
 		m_currentPoi = 0;
 
 	setView(m_pois[m_currentPoi]);
@@ -101,7 +109,7 @@ void Camera::update(float totalTime, float elapsedTime)
 
 	float timeRange = INTERPOLATE_TIME - m_interpolationTime;
 
-	if(timeRange - elapsedTime < 0)
+	if (timeRange - elapsedTime < 0)
 	{
 		m_currentView = m_targetView;
 		m_isInterpolating = false;
@@ -119,9 +127,29 @@ void Camera::update(float totalTime, float elapsedTime)
 	m_interpolationTime += elapsedTime;
 }
 
+void Camera::animate(float timeStamp, float dt, unsigned int frameNumber)
+{
+	if (!animateCamera)
+		return;
+
+	Util::Point newPosition;
+	if (!curve.calculatePoint(newPosition, timeStamp + dt))
+	{
+		return;
+	}
+	else
+	{
+		//Update current position
+		m_currentView.position = newPosition;
+		return;
+	}
+}
+
 void Camera::apply()
 {
 #ifdef ENABLE_GUI
+	if (animateCamera)
+		curve.drawCurve(Util::gGreen, 5);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	gluLookAt(m_currentView.position.x, m_currentView.position.y, m_currentView.position.z,
@@ -139,6 +167,7 @@ void Camera::apply_stereo(bool right)
 	glLoadIdentity();
 
 	const float eyeSep = 0.3f; // TODO: make configurable
+	Vector vd = m_currentView.lookat - m_currentView.position;
 	Vector rightVec = cross(normalize(m_currentView.lookat - m_currentView.position), m_currentView.up);
 	Point position = m_currentView.position + rightVec * eyeSep * (right ? 1 : -1);
 	Point lookat = m_currentView.lookat + rightVec * eyeSep * (right ? 1 : -1);
@@ -196,7 +225,7 @@ void Camera::nudgeZoom(float zoom)
 	Vector arm = m_currentView.position - m_currentView.lookat;
 
 	// don't zoom if it'll change the direction of the arm
-	if(arm.length() + zoom < .05)
+	if (arm.length() + zoom < .05)
 		return;
 
 	// we want the slightly exponential form, it is intuitively nicer for zooming.
@@ -262,14 +291,14 @@ const float Camera::fovy() const
 
 CameraView Camera::nextPointOfInterestView()
 {
-	if(m_pois.size() == 0)
+	if (m_pois.size() == 0)
 	{
 		return m_currentView;
 	}
 
 	int nextPoi = m_currentPoi + 1;
-	
-	if(nextPoi >= (int)m_pois.size())
+
+	if (nextPoi >= (int)m_pois.size())
 		nextPoi = 0;
 
 	return m_pois[nextPoi];

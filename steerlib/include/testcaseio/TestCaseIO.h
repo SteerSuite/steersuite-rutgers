@@ -82,6 +82,8 @@ namespace SteerLib {
 		inline const std::string & getPassingCriteria() { return _header.passingCriteria; }
 		/// Returns a data structure containing information about one suggested camera view.
 		inline const CameraView & getCameraView(unsigned int cameraIndex) { return _cameraViews[cameraIndex]; }
+		/// Returns a data structure containing information about all suggested camera view.
+		inline const std::vector<CameraView> & getCameraViews() { return _cameraViews; }
 		/// Returns the world boundaries specified by the test case.
 		inline const Util::AxisAlignedBox & getWorldBounds() const { return _header.worldBounds; }
 		#ifdef VARIABLE_SPAWN_TIME

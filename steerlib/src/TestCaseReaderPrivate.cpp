@@ -330,9 +330,11 @@ void TestCaseReaderPrivate::_parseCameraView(const ticpp::Element * subRoot)
 	cvi.lookat = Point(0.0f, 0.0f, 0.0f);
 	cvi.up = Vector(0.0f, 1.0f, 0.0f);
 	cvi.fovy = 45.0f;
-	
+	cvi.targetTangent = Vector(0.f, 0.f, 0.f);
+	cvi.targetTime = 0;
+
 	ticpp::Iterator<ticpp::Element> child;
-	for (child = child.begin(subRoot); child != child.end(); child++ ) {
+	for (child = child.begin(subRoot); child != child.end(); child++) {
 		std::string childTagName = child->Value();
 
 		// NOTE: in the following code, '&' and '*' do not cancel each other out;
@@ -341,6 +343,11 @@ void TestCaseReaderPrivate::_parseCameraView(const ticpp::Element * subRoot)
 			bool isRandom;
 			_getXYZOrRandomFromXMLElement(&(*child), cvi.position, isRandom);
 			if (isRandom) throw GenericException("Camera position (line " + toString(child->Row()) + ") should not be random.");
+		}
+		else if (childTagName == "targetTangent") {
+			bool isRandom;
+			_getXYZOrRandomFromXMLElement(&(*child), cvi.targetTangent, isRandom);
+			if (isRandom) throw GenericException("Camera targetTangent (line " + toString(child->Row()) + ") should not be random.");
 		}
 		else if (childTagName == "lookat") {
 			bool isRandom;
@@ -354,6 +361,9 @@ void TestCaseReaderPrivate::_parseCameraView(const ticpp::Element * subRoot)
 		}
 		else if (childTagName == "fovy") {
 			child->GetText(&cvi.fovy);
+		}
+		else if (childTagName == "targetTime") {
+			child->GetText(&cvi.targetTime);
 		}
 		else {
 			throw GenericException("Unexpected tag <" + childTagName + "> found on line " + toString(child->Row()) + "\n");
@@ -686,6 +696,8 @@ void TestCaseReaderPrivate::_parseGoalSequence(const ticpp::Element * subRoot, s
 		newGoal.targetName = "";
 		newGoal.timeDuration = 100000.0f;
 		newGoal.flowType = "";
+		newGoal.targetTangent = Vector(0.f, 0.f, 0.f);
+		newGoal.targetTime = 0;
 
 		std::string childTagName = child->Value();
 
@@ -734,6 +746,12 @@ void TestCaseReaderPrivate::_parseGoalSequence(const ticpp::Element * subRoot, s
 				if (goalSpecs->GetText() == "true") {
 					newGoal.targetIsRandom = true;
 				}
+			}
+			else if (specName == "targetTangent") {
+				_getXYZOrRandomFromXMLElement(&(*goalSpecs), newGoal.targetTangent, newGoal.targetIsRandom);
+			}
+			else if (specName == "targetTime") {
+				goalSpecs->GetText(&newGoal.targetTime);
 			}
 			else if (specName == "targetDirection") {
 				_getXYZOrRandomFromXMLElement(&(*goalSpecs), newGoal.targetDirection, newGoal.targetIsRandom);

@@ -81,5 +81,6 @@ add_subdirectory( external/recastnavigation )
 add_subdirectory( navmeshBuilder )
 add_subdirectory( steerbench )
 add_subdirectory( documentation )
+add_subdirectory( curveAI )
 
 install(DIRECTORY testcases DESTINATION share)

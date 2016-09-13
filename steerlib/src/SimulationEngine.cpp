@@ -385,6 +385,7 @@ void SimulationEngine::initializeSimulation()
 	}
 
 	_engineState.transitionToState(ENGINE_STATE_SIMULATION_LOADED);
+	_camera.animateCamera = _options->guiOptions.animateCamera;
 }
 
 //========================================
@@ -491,6 +492,9 @@ bool SimulationEngine::_simulateOneStep()
 	float simulatonDt = _clock.getSimulationDt();
 	unsigned int currentFrameNumber = _clock.getCurrentFrameNumber();
 
+	//Call animate for camera
+	if (_options->guiOptions.animateCamera)
+		_camera.animate(currentSimulationTime, simulatonDt, currentFrameNumber);
 
 	// call preprocess for all modules
 	std::vector<SteerLib::ModuleInterface*>::iterator moduleIterator;
@@ -1269,7 +1273,6 @@ void SimulationEngine::createAgentEmitter(const SteerLib::AgentInitialConditions
 }
 
 //========================================
-
 void SimulationEngine::destroyAgent(SteerLib::AgentInterface * agentToDestroy)
 {
 	/// @todo
@@ -1671,4 +1674,10 @@ std::pair<std::vector<Util::Point>,std::vector<size_t> > SimulationEngine::getSt
 void SimulationEngine::isTestcaseCameraView(bool status)
 {
 	_testcaseCameraView = status;
+}
+
+//==================================================
+void SimulationEngine::setCameraViewTestCase(const SteerLib::CameraView& _camv)
+{
+	_camera.setView(_camv.position, _camv.lookat, _camv.up, _camv.fovy);
 }

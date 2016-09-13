@@ -92,6 +92,7 @@ using namespace Util;
 #define DEFAULT_CAMERA_LOOKAT     Point(0.0f, 0.0f,  -5)
 #define DEFAULT_CAMERA_UP         Vector(0.0f, 1.0f, 0.0f)
 #define DEFAULT_CAMERA_FOVY       45
+#define DEFAULT_ANIMATE_CAMERA false
 
 //====================================
 // MISC. CAMERA VIEWS (copy-paste and 
@@ -275,6 +276,7 @@ SimulationOptions::SimulationOptions()
 	guiOptions.cameraFovy = DEFAULT_CAMERA_FOVY;
 	guiOptions.backgroundColor = DEFAULT_BACKGROUND_COLOR;
 	guiOptions.lineWidth = DEFAULT_LINE_WIDTH;
+	guiOptions.animateCamera = DEFAULT_ANIMATE_CAMERA;
 
 	// glfw engine driver options
 	glfwEngineDriverOptions.pausedOnStart = DEFAULT_CLOCK_PAUSED_ON_START;

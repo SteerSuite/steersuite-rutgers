@@ -296,6 +296,7 @@ namespace SteerLib {
 			float cameraFovy;
 			Util::Color backgroundColor;
 			float lineWidth;
+			bool animateCamera;
 		};
 
 		struct CommandLineEngineDriverOptions {

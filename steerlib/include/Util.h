@@ -10,6 +10,7 @@
 /// @file Util.h
 /// @brief includes all other Util include files.
 
+#include "util/Curve.h"
 #include "util/Color.h"
 #include "util/CommandLineParser.h"
 #include "util/DrawLib.h"
