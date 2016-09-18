@@ -53,7 +53,7 @@ namespace Util {
 	{
 	public:
 		// Constructors and Destructor
-		Curve(int curveType = catmullCurve) : type(curveType) {}
+		Curve(int curveType = hermiteCurve) : type(curveType) {}
 		Curve(const CurvePoint& startPoint, int curveType = catmullCurve);
 		Curve(const std::vector<CurvePoint>& inputPoints, int curveType = catmullCurve);
 		~Curve() {}
