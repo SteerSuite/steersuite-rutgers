@@ -52,8 +52,18 @@ void Curve::drawCurve(Color curveColor, float curveThickness, int window)
 		std::cerr << "ERROR>>>>Member function drawCurve is not implemented!" << std::endl;
 		flag = true;
 	}*/
-	//Point outputPoint;
-	//Util::DrawLib::drawLine(controlPoints[i].position, controlPoints[i + 1].position, curveColor, curveThickness);
+	if (!checkRobust())
+		return;
+	CurvePoint zeroPoint = controlPoints[0];
+	Point startPoint = zeroPoint.position;
+	float time_tmp = zeroPoint.time;
+	Point endPoint;
+	while (time_tmp <= controlPoints.back().time) {
+		if (!calculatePoint(endPoint, time_tmp))	return;
+		Util::DrawLib::drawLine(startPoint, endPoint, curveColor, curveThickness);
+		startPoint = endPoint;
+		time_tmp += window;
+	}
 	//=========================================================================
 
 	// Robustness: make sure there is at least two control point: start and end points
@@ -139,12 +149,11 @@ bool Curve::findTimeInterval(unsigned int& nextPoint, float time)
 		flag = true;
 	}*/
 	for (int i = 0; i < controlPoints.size(); i++) {
-		if (controlPoints[i].time >= time) {
+		if (controlPoints[i].time >= time && i != 0) {
 			nextPoint = i;
 			return true;
 		}
 	}
-	if (!nextPoint) return false;
 	//=========================================================================
 
 

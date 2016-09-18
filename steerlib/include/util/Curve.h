@@ -72,7 +72,7 @@ namespace Util {
 		std::vector<CurvePoint> getControPoints() { return controlPoints; }
 
 		// Draw the curve shape on screen, usign window as step size (bigger window: less accurate shape)
-		void drawCurve(Color curveColor = gOrange, float curveThickness = 2.f, int window = 5);
+		void drawCurve(Color curveColor = gOrange, float curveThickness = 2.f, int window = 2);
 
 		// Calculate the position on curve corresponding to the given time, outputPoint is the resulting position
 		bool calculatePoint(Point& outputPoint, float time);
