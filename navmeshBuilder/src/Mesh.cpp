@@ -1296,7 +1296,7 @@ void Mesh::write_to_obj_stream( std::ostream& stream ) const {
 
 void Mesh::verify() const {
 	for( std::size_t i = 0, iEnd = m_faceData.size(); i < iEnd; ++i ){
-#ifdef DEBUG
+#ifndef NDEBUG
 		std::size_t c = 0;
 #endif
 		const half_edge* it = &m_heData[ m_faceData[i] ];
