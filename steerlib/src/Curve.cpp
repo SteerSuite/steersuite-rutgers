@@ -217,7 +217,6 @@ Point minus(Point &P1) {
 Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
 {
 	Point newPosition;
-
 	//================DELETE THIS PART AND THEN START CODING===================
 	/*static bool flag = false;
 	if (!flag)
