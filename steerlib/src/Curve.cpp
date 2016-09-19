@@ -46,12 +46,20 @@ void Curve::drawCurve(Color curveColor, float curveThickness, int window)
 #ifdef ENABLE_GUI
 
 	//================DELETE THIS PART AND THEN START CODING===================
-	static bool flag = false;
-	if (!flag)
-	{
-		std::cerr << "ERROR>>>>Member function drawCurve is not implemented!" << std::endl;
-		flag = true;
-	}
+    if(!checkRobust())
+        return false;
+    
+    Point currentPoint = controlPoints[0].position;
+    Point nextPoint;
+    
+    float time = 0.0;
+    
+    while(calculatePoint(nextPoint,time)){
+        DrawLib::drawLine(currentPoint, nextPoint, curveColor, curveThickness);
+        currentPoint = nextPoint;
+        time = time + 0.01 * (float)window;
+    }
+
 	//=========================================================================
 
 	// Robustness: make sure there is at least two control point: start and end points
@@ -108,10 +116,11 @@ bool Curve::calculatePoint(Point& outputPoint, float time)
 }
 
 // Check Roboustness
+// size at least for 2
 bool Curve::checkRobust()
 {
 	//================DELETE THIS PART AND THEN START CODING===================
-	if(controlPoints.size < 2)
+	if(controlPoints.size() < 2)
         return false;
     //=========================================================================
 
@@ -123,13 +132,15 @@ bool Curve::checkRobust()
 bool Curve::findTimeInterval(unsigned int& nextPoint, float time)
 {
 	//================DELETE THIS PART AND THEN START CODING===================
-	static bool flag = false;
-	if (!flag)
-	{
-		std::cerr << "ERROR>>>>Member function findTimeInterval is not implemented!" << std::endl;
-		flag = true;
-	}
-	//=========================================================================
+    for(int i = 0; i < controlPoints.size(); i++){
+        if(time < controlPoints[i].time){
+            nextPoint = i;
+            break;
+        }
+        else
+            return false;
+    }
+    //=========================================================================
 
 
 	return true;
