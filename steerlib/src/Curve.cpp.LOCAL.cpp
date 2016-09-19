@@ -47,15 +47,7 @@ void Curve::drawCurve(Color curveColor, float curveThickness, int window)
 
 	//================DELETE THIS PART AND THEN START CODING===================
     if(!checkRobust())
-<<<<<<< HEAD
-        return false;
-=======
-<<<<<<< HEAD
         return;
-=======
-        return false;
->>>>>>> master
->>>>>>> joking
     
     Point currentPoint = controlPoints[0].position;
     Point nextPoint;
@@ -78,10 +70,6 @@ void Curve::drawCurve(Color curveColor, float curveThickness, int window)
 #endif
 }
 //I change here
-bool compare(CurvePoint temp1,CurvePoint temp2)
-{
-	return temp1.time < temp2.time;
-}
 // Sort controlPoints vector in ascending order: min-first
 bool compare(CurvePoint P1, CurvePoint P2)
 {
@@ -90,6 +78,7 @@ bool compare(CurvePoint P1, CurvePoint P2)
 void Curve::sortControlPoints()
 {
 	sort(controlPoints.begin(), controlPoints.end(), compare);
+	return;
 }
 
 // Calculate the position on curve corresponding to the given time, outputPoint is the resulting position
@@ -126,7 +115,6 @@ bool Curve::calculatePoint(Point& outputPoint, float time)
 // size at least for 2
 bool Curve::checkRobust()
 {
-
 	//================DELETE THIS PART AND THEN START CODING===================
 	if(controlPoints.size() < 2)
         return false;
