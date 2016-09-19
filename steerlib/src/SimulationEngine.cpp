@@ -1143,7 +1143,7 @@ void SimulationEngine::getListOfKnownPlugInModules(std::vector<std::string> & mo
 #ifdef _WIN32
 	std::string extension = ".dll";
 #else
-	std::string extension = ".o";
+	std::string extension = ".so";
 #endif
 
 
