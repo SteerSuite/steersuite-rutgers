@@ -83,14 +83,14 @@
       <seekStaticTarget>
         <targetLocation> <x>-10</x> <y>0</y> <z>-2</z> </targetLocation>
         <targetTangent> <x>-5</x> <y>0</y> <z>1</z> </targetTangent>
-        <targetTime>100</targetTime>
+        <targetTime>150</targetTime><!--100-->
         <desiredSpeed>1.3</desiredSpeed>
         <timeDuration>10000</timeDuration>
       </seekStaticTarget>
       <seekStaticTarget>
         <targetLocation> <x>20</x> <y>0</y> <z>-5</z> </targetLocation>
         <targetTangent> <x>4</x> <y>0</y> <z>0</z> </targetTangent>
-        <targetTime>150</targetTime>
+        <targetTime>200</targetTime><!--150-->
         <desiredSpeed>1.3</desiredSpeed>
         <timeDuration>10000</timeDuration>
       </seekStaticTarget>
