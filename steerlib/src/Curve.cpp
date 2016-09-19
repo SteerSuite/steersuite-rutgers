@@ -11,7 +11,7 @@
 #include <util/Color.h>
 #include <util/DrawLib.h>
 #include "Globals.h"
-
+using namespace std;
 using namespace Util;
 
 Curve::Curve(const CurvePoint& startPoint, int curveType) : type(curveType)
@@ -47,7 +47,7 @@ void Curve::drawCurve(Color curveColor, float curveThickness, int window)
 
 	//================DELETE THIS PART AND THEN START CODING===================
     if(!checkRobust())
-        return false;
+        return;
     
     Point currentPoint = controlPoints[0].position;
     Point nextPoint;
@@ -71,17 +71,13 @@ void Curve::drawCurve(Color curveColor, float curveThickness, int window)
 }
 //I change here
 // Sort controlPoints vector in ascending order: min-first
+bool compare(CurvePoint P1, CurvePoint P2)
+{
+	return P1.time < P2.time;
+}
 void Curve::sortControlPoints()
 {
-	//================DELETE THIS PART AND THEN START CODING===================
-	static bool flag = false;
-	if (!flag)
-	{
-		std::cerr << "ERROR>>>>Member function sortControlPoints is not implemented!" << std::endl;
-		flag = true;
-	}
-	//=========================================================================
-
+	sort(controlPoints.begin(), controlPoints.end(), compare);
 	return;
 }
 
@@ -152,18 +148,7 @@ Point Curve::useHermiteCurve(const unsigned int nextPoint, const float time)
 	Point newPosition;
 	float normalTime, intervalTime;
 
-	//================DELETE THIS PART AND THEN START CODING===================
-	static bool flag = false;
-	if (!flag)
-	{
-		std::cerr << "ERROR>>>>Member function useHermiteCurve is not implemented!" << std::endl;
-		flag = true;
-	}
-	//=========================================================================
-
-	// Calculate position at t = time on Hermite curve
-
-	// Return result
+	
 	return newPosition;
 }
 
