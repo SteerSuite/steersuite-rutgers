@@ -62,17 +62,42 @@ void Curve::drawCurve(Color curveColor, float curveThickness, int window)
 #endif
 }
 
+//Sorting function
+bool comparingCurvePoints (Util::CurvePoint a, Util::CurvePoint b) {
+	return (a.time < b.time);
+}
+
+
 // Sort controlPoints vector in ascending order: min-first
 void Curve::sortControlPoints()
 {
-	//================DELETE THIS PART AND THEN START CODING===================
-	static bool flag = false;
-	if (!flag)
-	{
-		std::cerr << "ERROR>>>>Member function sortControlPoints is not implemented!" << std::endl;
-		flag = true;
+	//Print the vector
+	//comment out later..............................................................
+	std::cout << "---------------------------------------------" << std::endl;
+	std::cout << "We are printing the control Points:" << std::endl;
+	std::cout << "---------------------------------------------" << std::endl;
+	for (std::vector<Util::CurvePoint>::iterator it = controlPoints.begin(); it != controlPoints.end(); ++it) {
+		Util::CurvePoint currentIteration = *it;
+		std::cout<<currentIteration.time<<std::endl;
+	} 
+	//...............................................................................
+	
+	//CurvePoint parts:
+	//Point position;Vector tangent;float time;
+
+	//SORT
+	std::sort(controlPoints.begin(), controlPoints.end(), comparingCurvePoints);
+
+	//Print the vector
+	//comment out later..............................................................
+	std::cout << "---------------------------------------------" << std::endl;
+	std::cout << "We are printing the sorted! control Points:" << std::endl;
+	std::cout << "---------------------------------------------" << std::endl;
+	for (std::vector<Util::CurvePoint>::iterator it = controlPoints.begin(); it != controlPoints.end(); ++it) {
+		Util::CurvePoint currentIteration = *it;
+		std::cout << currentIteration.time << std::endl;
 	}
-	//=========================================================================
+	//...............................................................................
 
 	return;
 }
