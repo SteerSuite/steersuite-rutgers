@@ -53,7 +53,7 @@ namespace Util {
 	{
 	public:
 		// Constructors and Destructor
-		Curve(int curveType = catmullCurve) : type(curveType) {}
+		Curve(int curveType = hermiteCurve) : type(curveType) {}
 		Curve(const CurvePoint& startPoint, int curveType = catmullCurve);
 		Curve(const std::vector<CurvePoint>& inputPoints, int curveType = catmullCurve);
 		~Curve() {}
@@ -72,7 +72,7 @@ namespace Util {
 		std::vector<CurvePoint> getControPoints() { return controlPoints; }
 
 		// Draw the curve shape on screen, usign window as step size (bigger window: less accurate shape)
-		void drawCurve(Color curveColor = gOrange, float curveThickness = 2.f, int window = 5);
+		void drawCurve(Color curveColor = gOrange, float curveThickness = 2.f, int window = 2);
 
 		// Calculate the position on curve corresponding to the given time, outputPoint is the resulting position
 		bool calculatePoint(Point& outputPoint, float time);
