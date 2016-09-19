@@ -47,15 +47,7 @@ void Curve::drawCurve(Color curveColor, float curveThickness, int window)
 
 	//================DELETE THIS PART AND THEN START CODING===================
     if(!checkRobust())
-<<<<<<< HEAD
         return false;
-=======
-<<<<<<< HEAD
-        return;
-=======
-        return false;
->>>>>>> master
->>>>>>> joking
     
     Point currentPoint = controlPoints[0].position;
     Point nextPoint;
