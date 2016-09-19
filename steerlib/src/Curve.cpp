@@ -47,7 +47,7 @@ void Curve::drawCurve(Color curveColor, float curveThickness, int window)
 
 	//================DELETE THIS PART AND THEN START CODING===================
     if(!checkRobust())
-        return false;
+        return;
     
     Point currentPoint = controlPoints[0].position;
     Point nextPoint;
@@ -133,9 +133,9 @@ bool Curve::findTimeInterval(unsigned int& nextPoint, float time)
 	//================DELETE THIS PART AND THEN START CODING===================
     for(int i = 0; i < controlPoints.size(); i++){
         if(time < controlPoints[i].time){
-            if(nextPoint == 0)
-                return false；
-            nextPoint = i;
+			if (nextPoint == 0)
+				return false;
+			nextPoint = i;
             break;
         }
         else
