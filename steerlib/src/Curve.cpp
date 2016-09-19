@@ -203,11 +203,13 @@ Point Curve::useHermiteCurve(const unsigned int nextPoint, const float time)
 	return newPosition;
 }
 
-float calc_t(Point& P1, Point& P2, float pre_t) {
-	float tmp1 = pow((P2.x - P1.x), 2) + pow((P2.y - P1.y), 2) + pow((P2.z - P1.z), 2);
-	tmp1 = sqrt(sqrt(tmp1));
-	return tmp1 + pre_t;
-}
+//float calc_t(Point& P1, Point& P2, float pre_t) {
+//	float tmp1 = pow((P2.x - P1.x), 2) + pow((P2.y - P1.y), 2) + pow((P2.z - P1.z), 2);
+//	tmp1 = sqrt(sqrt(tmp1));
+//	return tmp1 + pre_t;
+//}
+
+
 Point minus(Point &P1) {
 	return Point(-P1.x, -P1.y, -P1.z);
 }
