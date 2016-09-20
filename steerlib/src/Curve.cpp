@@ -168,9 +168,9 @@ bool Curve::findTimeInterval(unsigned int& nextPoint, float time)
 	for (int i = 1; i < controlPoints.size(); i++) {
 		if (time <= controlPoints[i].time) {
 			//std::cout << "the time we are looking for is definitely " << time << std::endl;
-			std::cout << "the controlPoint time at " << i << " is " << controlPoints[i].time <<  std::endl;
+			//std::cout << "the controlPoint time at " << i << " is " << controlPoints[i].time <<  std::endl;
 			nextPoint = i;
-			std::cout << "the next point is " << nextPoint <<  std::endl;
+			//std::cout << "the next point is " << nextPoint <<  std::endl;
 			return true;
 		}
 	}
@@ -193,17 +193,64 @@ Point Curve::useHermiteCurve(const unsigned int nextPoint, const float time)
 	Point newPosition;
 	float normalTime, intervalTime;
 
-	//================DELETE THIS PART AND THEN START CODING===================
-	static bool flag = false;
-	if (!flag)
-	{
-		std::cerr << "ERROR>>>>Member function useHermiteCurve is not implemented!" << std::endl;
-		flag = true;
+	float t1 = controlPoints[nextPoint - 1].time;
+	float t2 = controlPoints[nextPoint].time;
+
+	//comment out later..............................................................
+	std::cout << "---------------------------------------------" << std::endl;
+	std::cout << "We are printing the control Points:" << std::endl;
+	std::cout << "---------------------------------------------" << std::endl;
+	for (std::vector<Util::CurvePoint>::iterator it = controlPoints.begin(); it != controlPoints.end(); ++it) {
+		Util::CurvePoint currentIteration = *it;
+		std::cout << currentIteration.time << std::endl;
 	}
-	//=========================================================================
+	std::cout << "Current nextPOint: " << nextPoint << std::endl;
+	//...............................................................................
+
+	intervalTime = t2 - t1;
+	//normalize time
+	normalTime = (time - t1) / intervalTime;
+	std::cout << "time: " << time << std::endl;
+	std::cout << "normalTime: " << normalTime << std::endl;
 
 	// Calculate position at t = time on Hermite curve
 
+	//calculate the functions
+	//f1(t)=2*t^3-3*t^2+1
+	float f1 = 2 * normalTime*normalTime*normalTime - 3 * normalTime*normalTime + 1;
+	std::cout << "f1: " << f1 << std::endl;
+	//f2(t)=-2*t^3+3*t^2
+	float f2 = -2 * normalTime*normalTime*normalTime + 3 * normalTime*normalTime;
+	std::cout << "f2: " << f2 << std::endl;
+	//f3(t)=t^3-2*t^2+t
+	float f3 = normalTime*normalTime*normalTime - 2 * normalTime*normalTime + normalTime;
+	std::cout << "f3: " << f3 << std::endl;
+	//f4(t)=t^3-t^2
+	float f4 = normalTime*normalTime*normalTime - normalTime*normalTime;
+	std::cout << "f4: " << f4 << std::endl;
+
+	//find Gh=[P1 P4 R1 R4]
+	Point P1 = controlPoints[nextPoint - 1].position;
+	std::cout << "P1: " << P1 << std::endl;
+	Point P4 = controlPoints[nextPoint].position;
+	std::cout << "P4: " << P4 << std::endl;
+	Vector R1 = controlPoints[nextPoint - 1].tangent;
+	std::cout << "R1: " << R1 << std::endl;
+	Vector R4 = controlPoints[nextPoint].tangent;
+	std::cout << "R4: " << R4 << std::endl;
+
+	//calculate the x(t), y(t) and z(t) functions
+	//x(t)=[f1 f2 f3 f4]Gx...
+	float xt = f1*P1.x + f2*P4.x + f3*R1.x + f4*R4.x;
+	float yt = f1*P1.y + f2*P4.y + f3*R1.y + f4*R4.y;
+	float zt = f1*P1.z + f2*P4.z + f3*R1.z + f4*R4.z;
+
+	newPosition.x = xt;
+	newPosition.y = yt;
+	newPosition.z = zt;
+
+	//std::cout << "the new position for poitn at time " << time << " is: (" << xt << "," << yt << "," << zt << ")." << std::endl;
+	std::cout << "newPosition: " << newPosition << std::endl;
 	// Return result
 	return newPosition;
 }
