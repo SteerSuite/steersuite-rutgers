@@ -196,6 +196,10 @@ Point Curve::useHermiteCurve(const unsigned int nextPoint, const float time)
 	float t1 = controlPoints[nextPoint - 1].time;
 	float t2 = controlPoints[nextPoint].time;
 
+	//if (time<t1 || time>t2) {
+	//	return;
+	//}
+
 	//comment out later..............................................................
 	std::cout << "---------------------------------------------" << std::endl;
 	std::cout << "We are printing the control Points:" << std::endl;
@@ -223,10 +227,10 @@ Point Curve::useHermiteCurve(const unsigned int nextPoint, const float time)
 	float f2 = -2 * normalTime*normalTime*normalTime + 3 * normalTime*normalTime;
 	std::cout << "f2: " << f2 << std::endl;
 	//f3(t)=t^3-2*t^2+t
-	float f3 = normalTime*normalTime*normalTime - 2 * normalTime*normalTime + normalTime;
+	float f3 = (normalTime*normalTime*normalTime - 2 * normalTime*normalTime + normalTime)*intervalTime;
 	std::cout << "f3: " << f3 << std::endl;
 	//f4(t)=t^3-t^2
-	float f4 = normalTime*normalTime*normalTime - normalTime*normalTime;
+	float f4 = (normalTime*normalTime*normalTime - normalTime*normalTime)*intervalTime;
 	std::cout << "f4: " << f4 << std::endl;
 
 	//find Gh=[P1 P4 R1 R4]
@@ -248,6 +252,8 @@ Point Curve::useHermiteCurve(const unsigned int nextPoint, const float time)
 	newPosition.x = xt;
 	newPosition.y = yt;
 	newPosition.z = zt;
+
+	
 
 	//std::cout << "the new position for poitn at time " << time << " is: (" << xt << "," << yt << "," << zt << ")." << std::endl;
 	std::cout << "newPosition: " << newPosition << std::endl;
