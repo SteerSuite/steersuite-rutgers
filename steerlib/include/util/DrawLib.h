@@ -163,7 +163,7 @@ namespace Util {
 		static int _cubeDisplayList;
 		static int _sphereDisplayList;
 		static int _cylinderDisplayList;
-
+		static int _DickDisplayList;
 		// quadrics for shape drawings
 		static GLUquadricObj* _quadric;
 
