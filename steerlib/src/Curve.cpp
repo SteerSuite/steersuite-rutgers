@@ -2,7 +2,7 @@
 // Copyright (c) 2009-2015 Glen Berseth, Mubbasir Kapadia, Shawn Singh, Petros Faloutsos, Glenn Reinman
 // See license.txt for complete license.
 // Copyright (c) 2015 Mahyar Khayatkhoei
-// CG-F16-23
+// CG-F16-27
 
 #include <algorithm>
 #include <vector>
@@ -178,7 +178,7 @@ Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
 	Point p1 = controlPoints[i1].position;
 	Point p2 = controlPoints[i2].position;
 
-	Vector s1, s2;
+	Vector tan1, tan2;
 
 	// Calculate time interval, and normal time required for later curve calculations
 	intervalTime = controlPoints[i2].time - controlPoints[i1].time;
@@ -191,24 +191,24 @@ Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
 	//compute tangent information
 	if (i1 < 1) 
 	{
-		s1 = 2 * (p2 - p1) - (controlPoints[i3].position - p1) / 2;
-		s2 = (controlPoints[i3].position - p1) / 2;
+		tan1 = 2 * (p2 - p1) - (controlPoints[i3].position - p1) / 2;
+		tan2 = (controlPoints[i3].position - p1) / 2;
 	}
 	else if (i3 >= controlPoints.size()) 
 	{
-		s1 = (p2 - controlPoints[i0].position) / 2;
-		s2 = 2 * (p2 - p1) - (p2 - controlPoints[i0].position) / 2;
+		tan1 = (p2 - controlPoints[i0].position) / 2;
+		tan2 = 2 * (p2 - p1) - (p2 - controlPoints[i0].position) / 2;
 	}
 	else 
 	{
-		s1 = (p2 - controlPoints[i0].position) / 2;
-		s2 = (controlPoints[i3].position - p1) / 2;
+		tan1 = (p2 - controlPoints[i0].position) / 2;
+		tan2 = (controlPoints[i3].position - p1) / 2;
 	}
 
 	newPosition = (2 * t3 - 3 * t2 + 1) * p1 // f1t
 		+ (-2 * t3 + 3 * t2) * p2 //f2t
-		+ (t3 - 2 * t2 + normalTime) * s1 //f3t
-		+ (t3 - t2) * s2;//f34
+		+ (t3 - 2 * t2 + normalTime) * tan1 //f3t
+		+ (t3 - t2) * tan2;//f34
 	
 	// Return result
 	return newPosition;

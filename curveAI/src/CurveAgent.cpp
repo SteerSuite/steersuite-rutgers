@@ -26,8 +26,8 @@ CurveAgent::CurveAgent()
 	_enabled = false;
 
 	// Set curve type here
-	//curve.setType(Util::hermiteCurve);
-	curve.setType(Util::catmullCurve);
+	curve.setType(Util::hermiteCurve);
+	//curve.setType(Util::catmullCurve);
 }
 
 CurveAgent::~CurveAgent()
@@ -155,21 +155,46 @@ void CurveAgent::draw()
 {
 #ifdef ENABLE_GUI
 	// if the agent is selected, do some annotations just for demonstration
+	Point pos1, pos2;
+	pos1 = __position;
+	pos2 = __position;
+	pos1.x -= 1.5 * _radius;
+	pos2.x += 1.5 * _radius;
+
+	Point pos3, pos4;
+	pos3 = __position;
+	pos4 = __position;
+	pos3.z -= 1.5 * _radius;
+	pos4.z += 1.5 * _radius;
+
 	if (gEngine->isAgentSelected(this)) {
 		Util::Ray ray;
 		ray.initWithUnitInterval(__position, _forward);
 		float t = 0.0f;
 		SteerLib::SpatialDatabaseItem * objectFound;
 		Util::DrawLib::drawLine(ray.pos, ray.eval(1.0f));
+
 		if (gSpatialDatabase->trace(ray, t, objectFound, this, false)) {
 			Util::DrawLib::drawAgentDisc(__position, _forward, _radius, Util::gOrange);
+			Util::DrawLib::drawSphere(pos1, _forward, 0.5*_radius, Util::gOrange);
+			Util::DrawLib::drawSphere(pos2, _forward, 0.5*_radius, Util::gGreen);
+			Util::DrawLib::drawSphere(pos3, _forward, 0.5*_radius, Util::gRed);
+			Util::DrawLib::drawSphere(pos4, _forward, 0.5*_radius, Util::gBlue);
 		}
 		else {
 			Util::DrawLib::drawAgentDisc(__position, _forward, _radius, Util::gDarkOrange);
+			Util::DrawLib::drawSphere(pos1, _forward, 0.5*_radius, Util::gOrange);
+			Util::DrawLib::drawSphere(pos2, _forward, 0.5*_radius, Util::gGreen);
+			Util::DrawLib::drawSphere(pos3, _forward, 0.5*_radius, Util::gRed);
+			Util::DrawLib::drawSphere(pos4, _forward, 0.5*_radius, Util::gBlue);
 		}
 	}
 	else {
 		Util::DrawLib::drawAgentDisc(__position, _forward, _radius, agentColor);
+		Util::DrawLib::drawSphere(pos1, _forward, 0.5*_radius, Util::gOrange);
+		Util::DrawLib::drawSphere(pos2, _forward, 0.5*_radius, Util::gGreen);
+		Util::DrawLib::drawSphere(pos3, _forward, 0.5*_radius, Util::gRed);
+		Util::DrawLib::drawSphere(pos4, _forward, 0.5*_radius, Util::gBlue);
 	}
 
 	// Draw flags for all goal targets
