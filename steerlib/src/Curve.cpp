@@ -45,12 +45,9 @@ void Curve::drawCurve(Color curveColor, float curveThickness, int window)
 {
 #ifdef ENABLE_GUI
 	
-	
 	Util::Point current = controlPoints[0].position;
 	Util::Point startPoint;
-	//std::cout << startPoint << std::endl;
 	for (int i = 0; i <= (int)controlPoints[controlPoints.size()-1].time; i=i+window) {
-		//std::cout << "i:" << i << std::endl;
 		startPoint = current;
 		if (!calculatePoint(current, (float)i)) {
 			break;
@@ -257,47 +254,56 @@ Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
 {
 	Point newPosition;
 
+	float normalTime, intervalTime;
+	float t1 = controlPoints[nextPoint - 1].time;
+	float t2 = controlPoints[nextPoint].time;
+	intervalTime = t2 - t1;
+	//normalize time
+	normalTime = (time - t1) / intervalTime;
+
+	//calculate the functions
+	//f1(t)=2*t^3-3*t^2+1
+	float f1 = 2 * normalTime*normalTime*normalTime - 3 * normalTime*normalTime + 1;
+	//f2(t)=-2*t^3+3*t^2
+	float f2 = -2 * normalTime*normalTime*normalTime + 3 * normalTime*normalTime;
+	//f3(t)=t^3-2*t^2+t
+	float f3 = (normalTime*normalTime*normalTime - 2 * normalTime*normalTime + normalTime)*intervalTime;
+	//f4(t)=t^3-t^2
+	float f4 = (normalTime*normalTime*normalTime - normalTime*normalTime)*intervalTime;
+
 	// Calculate position at t = time on Catmull-Rom curve
 	//4 options
 	//1. only 2 points
-	//1.5. only 1 point?
 	//2. point is last one
 	//3. point is first
 	//4. else
 
-	//if (controlPoints.size == 2) {
-	//
-	//}
-	if (nextPoint == controlPoints.size()) {
-		float normalTime, intervalTime;
+	if (controlPoints.size() == 2) {
+		//find Gh=[P1 P4 R1 R4]
+		Point P1 = controlPoints[0].position;
+		Point P4 = controlPoints[1].position;
 
-		float t1 = controlPoints[nextPoint - 1].time;
-		float t2 = controlPoints[nextPoint].time;
+		//figure out the two tangents:
+		//figure out the first tangent:
+		Point y0 = P1;
+		Point y1 = P4;
 
-		//if (time<t1 || time>t2) {
-		//	return;
-		//}
+		float t0 = controlPoints[0].time;
+		t1 = controlPoints[1].time;
 
-		intervalTime = t2 - t1;
-		//normalize time
-		normalTime = (time - t1) / intervalTime;
+		//first tangent
+		Vector R1 = (P4-P1)/(t1-t0);
+		//last tangent
+		Vector R4 = R1;
 
-		// Calculate position at t = time on Hermite curve
-
-		//calculate the functions
-		//f1(t)=2*t^3-3*t^2+1
-		float f1 = 2 * normalTime*normalTime*normalTime - 3 * normalTime*normalTime + 1;
-		//f2(t)=-2*t^3+3*t^2
-		float f2 = -2 * normalTime*normalTime*normalTime + 3 * normalTime*normalTime;
-		//f3(t)=t^3-2*t^2+t
-		float f3 = (normalTime*normalTime*normalTime - 2 * normalTime*normalTime + normalTime)*intervalTime;
-		//f4(t)=t^3-t^2
-		float f4 = (normalTime*normalTime*normalTime - normalTime*normalTime)*intervalTime;
-
+		//calculate the x(t), y(t) and z(t) functions
+		//x(t)=[f1 f2 f3 f4]Gx...
+		newPosition = f1*P1 + f2*P4 + f3*R1 + f4*R4;
+	}
+	if (nextPoint == controlPoints.size()-1) {
 		//find Gh=[P1 P4 R1 R4]
 		Point P1 = controlPoints[nextPoint - 1].position;
 		Point P4 = controlPoints[nextPoint].position;
-
 
 		//figure out the two tangents:
 		//figure out the first tangent:
@@ -311,60 +317,19 @@ Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
 		float t3 = controlPoints[nextPoint].time;
 		//float t4 = controlPoints[nextPoint + 1].time;
 
-		Vector tangent0;
-		tangent0.x = ((t2 - t1) / (t3 - t1))*((y3.x - y2.x) / (t3 - t2)) + ((t3 - t2) / (t3 - t1))*((y2.x - y1.x) / (t2 - t1));
-		tangent0.y = ((t2 - t1) / (t3 - t1))*((y3.y - y2.y) / (t3 - t2)) + ((t3 - t2) / (t3 - t1))*((y2.y - y1.y) / (t2 - t1));
-		tangent0.z = ((t2 - t1) / (t3 - t1))*((y3.z - y2.z) / (t3 - t2)) + ((t3 - t2) / (t3 - t1))*((y2.z - y1.z) / (t2 - t1));
-		std::cout << "tangent5: " << tangent0 << std::endl;
-
-		Vector tangent1;
-		tangent1.x = -1*((t3 - t1) / (t2 - t1))*((y3.x - y2.x) / (t3 - t2)) + ((t3 - t2) / (t2 - t1))*((y3.x - y1.x) / (t3 - t1));
-		tangent1.y = -1 * ((t3 - t1) / (t2 - t1))*((y3.y - y2.y) / (t3 - t2)) + ((t3 - t2) / (t2 - t1))*((y3.y - y1.y) / (t3 - t1));
-		tangent1.z = -1 * ((t3 - t1) / (t2 - t1))*((y3.z - y2.z) / (t3 - t2)) + ((t3 - t2) / (t2 - t1))*((y3.z - y1.z) / (t3 - t1));
-		std::cout << "tangent6: " << tangent1 << std::endl;
-
-		Vector R1 = tangent0;
-		Vector R4 = tangent1;
+		//pre last point tangent
+		Vector R1 = ((t2 - t1) / (t3 - t1))*((y3 - y2) / (t3 - t2)) + ((t3 - t2) / (t3 - t1))*((y2 - y1) / (t2 - t1));
+		//last point tangent
+		Vector R4 = ((t3 - t1) / (t2 - t1))*((y3 - y2) / (t3 - t2)) - ((t3 - t2) / (t2 - t1))*((y3 - y1) / (t3 - t1));
 
 		//calculate the x(t), y(t) and z(t) functions
 		//x(t)=[f1 f2 f3 f4]Gx...
-		float xt = f1*P1.x + f2*P4.x + f3*R1.x + f4*R4.x;
-		float yt = f1*P1.y + f2*P4.y + f3*R1.y + f4*R4.y;
-		float zt = f1*P1.z + f2*P4.z + f3*R1.z + f4*R4.z;
-
-		newPosition.x = xt;
-		newPosition.y = yt;
-		newPosition.z = zt;
-		//if next point is right after the first one
+		newPosition = f1*P1 + f2*P4 + f3*R1 + f4*R4;
 	} 
 	else if (nextPoint == 1) {
-		float normalTime, intervalTime;
-
-		float t1 = controlPoints[0].time;
-		float t2 = controlPoints[1].time;
-
-		intervalTime = t2 - t1;
-		//normalize time
-		normalTime = (time - t1) / intervalTime;
-		
-
-		// Calculate position at t = time on Hermite curve
-
-		//calculate the functions
-		//f1(t)=2*t^3-3*t^2+1
-		float f1 = 2 * normalTime*normalTime*normalTime - 3 * normalTime*normalTime + 1;
-		//f2(t)=-2*t^3+3*t^2
-		float f2 = -2 * normalTime*normalTime*normalTime + 3 * normalTime*normalTime;
-		//f3(t)=t^3-2*t^2+t
-		float f3 = (normalTime*normalTime*normalTime - 2 * normalTime*normalTime + normalTime)*intervalTime;
-		//f4(t)=t^3-t^2
-		float f4 = (normalTime*normalTime*normalTime - normalTime*normalTime)*intervalTime;
-		
-
 		//find Gh=[P1 P4 R1 R4]
 		Point P1 = controlPoints[0].position;
 		Point P4 = controlPoints[1].position;
-
 
 		//figure out the two tangents:
 		//figure out the first tangent:
@@ -376,68 +341,17 @@ Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
 		 t1 = controlPoints[1].time;
 		 t2 = controlPoints[2].time;
 
-		 //s0
-		Vector tangent0;
-		tangent0.x = ((t2 - t0) / (t2 - t1))*((y1.x - y0.x) / (t1 - t0)) - ((t1 - t0) / (t2 - t1))*((y2.x - y0.x) / (t2 - t0));
-		tangent0.y = ((t2 - t0) / (t2 - t1))*((y1.y - y0.y) / (t1 - t0)) - ((t1 - t0) / (t2 - t1))*((y2.y - y0.y) / (t2 - t0));
-		tangent0.z = ((t2 - t0) / (t2 - t1))*((y1.z - y0.z) / (t1 - t0)) - ((t1 - t0) / (t2 - t1))*((y2.z - y0.z) / (t2 - t0));
-		
-		//tangent0.x = (y1.x - y0.x) / (t1 - t0);
-		//tangent0.y = (y1.y - y0.y) / (t1 - t0);
-		//tangent0.z = (y1.z - y0.z) / (t1 - t0);
-		std::cout << "tangent0: " << tangent0 << std::endl;
-
-		//s1
-		Vector tangent1;//= controlPoints[0].tangent;
-		tangent1.x = ((t1 - t0) / (t2 - t0))*((y2.x - y1.x) / (t2 - t1)) + ((t2 - t1) / (t2 - t0))*((y1.x - y0.x) / (t1 - t0));
-		tangent1.y = ((t1 - t0) / (t2 - t0))*((y2.y - y1.y) / (t2 - t1)) + ((t2 - t1) / (t2 - t0))*((y1.y - y0.y) / (t1 - t0));
-		tangent1.z = ((t1 - t0) / (t2 - t0))*((y2.z - y1.z) / (t2 - t1)) + ((t2 - t1) / (t2 - t0))*((y1.z - y0.z) / (t1 - t0));
-		
-		//tangent1.x = (y2.x - y0.x) / (t2 - t0);
-		//tangent1.y = (y2.y - y0.y) / (t2 - t0);
-		//tangent1.z = (y2.z - y0.z) / (t2 - t0);
-		std::cout << "tangent1: " << tangent1 << std::endl;
-
-		Vector R1 = tangent0;
-		Vector R4 = tangent1;
+		 //1st point tangent
+		Vector R1 = ((t2 - t0) / (t2 - t1))*((y1 - y0) / (t1 - t0)) - ((t1 - t0) / (t2 - t1))*((y2 - y0) / (t2 - t0));
+		//2nd point tangent
+		Vector R4 = ((t1 - t0) / (t2 - t0))*((y2 - y1) / (t2 - t1)) + ((t2 - t1) / (t2 - t0))*((y1 - y0) / (t1 - t0));
 
 		//calculate the x(t), y(t) and z(t) functions
 		//x(t)=[f1 f2 f3 f4]Gx...
-		float xt = f1*P1.x + f2*P4.x + f3*R1.x + f4*R4.x;
-		float yt = f1*P1.y + f2*P4.y + f3*R1.y + f4*R4.y;
-		float zt = f1*P1.z + f2*P4.z + f3*R1.z + f4*R4.z;
-
-		newPosition.x = xt;
-		newPosition.y = yt;
-		newPosition.z = zt;
+		newPosition = f1*P1 + f2*P4 + f3*R1 + f4*R4;
 	}
 	//non boundry condition
 	else {
-		float normalTime, intervalTime;
-
-		float t1 = controlPoints[nextPoint - 1].time;
-		float t2 = controlPoints[nextPoint].time;
-
-		//if (time<t1 || time>t2) {
-		//	return;
-		//}
-
-		intervalTime = t2 - t1;
-		//normalize time
-		normalTime = (time - t1) / intervalTime;
-
-		// Calculate position at t = time on Hermite curve
-
-		//calculate the functions
-		//f1(t)=2*t^3-3*t^2+1
-		float f1 = 2 * normalTime*normalTime*normalTime - 3 * normalTime*normalTime + 1;
-		//f2(t)=-2*t^3+3*t^2
-		float f2 = -2 * normalTime*normalTime*normalTime + 3 * normalTime*normalTime;
-		//f3(t)=t^3-2*t^2+t
-		float f3 = (normalTime*normalTime*normalTime - 2 * normalTime*normalTime + normalTime)*intervalTime;
-		//f4(t)=t^3-t^2
-		float f4 = (normalTime*normalTime*normalTime - normalTime*normalTime)*intervalTime;
-
 		//find Gh=[P1 P4 R1 R4]
 		Point P1 = controlPoints[nextPoint - 1].position;
 		Point P4 = controlPoints[nextPoint].position;
@@ -455,30 +369,12 @@ Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
 		float t3 = controlPoints[nextPoint].time;
 		float t4 = controlPoints[nextPoint + 1].time;
 
-		Vector tangent0;
-		tangent0.x = ((t2 - t1) / (t3 - t1))*((y3.x - y2.x) / (t3 - t2)) + ((t3 - t2) / (t3 - t1))*((y2.x - y1.x) / (t2 - t1));
-		tangent0.y = ((t2 - t1) / (t3 - t1))*((y3.y - y2.y) / (t3 - t2)) + ((t3 - t2) / (t3 - t1))*((y2.y - y1.y) / (t2 - t1));
-		tangent0.z = ((t2 - t1) / (t3 - t1))*((y3.z - y2.z) / (t3 - t2)) + ((t3 - t2) / (t3 - t1))*((y2.z - y1.z) / (t2 - t1));
-		std::cout << "tangent3: " << tangent0 << std::endl;
-
-		Vector tangent1;
-		tangent1.x = ((t3 - t2) / (t4 - t2))*((y4.x - y3.x) / (t4 - t3)) + ((t4 - t3) / (t4 - t2))*((y3.x - y2.x) / (t3 - t2));
-		tangent1.y = ((t3 - t2) / (t4 - t2))*((y4.y - y3.y) / (t4 - t3)) + ((t4 - t3) / (t4 - t2))*((y3.y - y2.y) / (t3 - t2));
-		tangent1.z = ((t3 - t2) / (t4 - t2))*((y4.z - y3.z) / (t4 - t3)) + ((t4 - t3) / (t4 - t2))*((y3.z - y2.z) / (t3 - t2));
-		std::cout << "tangent4: " << tangent1 << std::endl;
-
-		Vector R1 = tangent0;
-		Vector R4 = tangent1;
+		Vector R1 = ((t2 - t1) / (t3 - t1))*((y3 - y2) / (t3 - t2)) + ((t3 - t2) / (t3 - t1))*((y2 - y1) / (t2 - t1));
+		Vector R4 = ((t3 - t2) / (t4 - t2))*((y4 - y3) / (t4 - t3)) + ((t4 - t3) / (t4 - t2))*((y3 - y2) / (t3 - t2));
 
 		//calculate the x(t), y(t) and z(t) functions
 		//x(t)=[f1 f2 f3 f4]Gx...
-		float xt = f1*P1.x + f2*P4.x + f3*R1.x + f4*R4.x;
-		float yt = f1*P1.y + f2*P4.y + f3*R1.y + f4*R4.y;
-		float zt = f1*P1.z + f2*P4.z + f3*R1.z + f4*R4.z;
-
-		newPosition.x = xt;
-		newPosition.y = yt;
-		newPosition.z = zt;
+		newPosition = f1*P1 + f2*P4 + f3*R1 + f4*R4;
 	}
 
 
