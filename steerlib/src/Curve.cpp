@@ -46,9 +46,9 @@ void Curve::drawCurve(Color curveColor, float curveThickness, int window)
 #ifdef ENABLE_GUI
 	
 	
-	Util::Point current;
+	Util::Point current = controlPoints[0].position;
 	Util::Point startPoint;
-	//std::cout << controlPoints[controlPoints.size() - 1].time << std::endl;
+	//std::cout << startPoint << std::endl;
 	for (int i = 0; i <= (int)controlPoints[controlPoints.size()-1].time; i=i+window) {
 		//std::cout << "i:" << i << std::endl;
 		startPoint = current;
@@ -57,15 +57,6 @@ void Curve::drawCurve(Color curveColor, float curveThickness, int window)
 		}
 		Util::DrawLib::drawLine(startPoint, current, curveColor, curveThickness);
 	}
-	//for(int i)
-	//...
-	//...
-	//...
-	//for(int i=1....){
-	//	if(!calculatePoint(current...,(float)i...window))
-	//		break;
-	//	DrawLib.drawLine()
-	//	....
 
 	// Robustness: make sure there is at least two control point: start and end points
 	// Move on the curve from t=0 to t=finalPoint, using window as step size, and linearly interpolate the curve points
@@ -152,15 +143,13 @@ bool Curve::calculatePoint(Point& outputPoint, float time)
 // Check Roboustness
 bool Curve::checkRobust()
 {
-	//================DELETE THIS PART AND THEN START CODING===================
-	static bool flag = false;
-	if (!flag)
-	{
-		std::cerr << "ERROR>>>>Member function checkRobust is not implemented!" << std::endl;
-		flag = true;
+	// Robustness: make sure there is at least two control point: start and end points
+	if (controlPoints.size() < 2) {
+		return false;
 	}
-	//=========================================================================
-
+	if (controlPoints[0].time < 0) {
+		return false;
+	}
 
 	return true;
 }
@@ -279,11 +268,76 @@ Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
 	//if (controlPoints.size == 2) {
 	//
 	//}
-	//else if (nextPoint == controlPoints.size) {
+	if (nextPoint == controlPoints.size()) {
+		float normalTime, intervalTime;
 
+		float t1 = controlPoints[nextPoint - 1].time;
+		float t2 = controlPoints[nextPoint].time;
+
+		//if (time<t1 || time>t2) {
+		//	return;
+		//}
+
+		intervalTime = t2 - t1;
+		//normalize time
+		normalTime = (time - t1) / intervalTime;
+
+		// Calculate position at t = time on Hermite curve
+
+		//calculate the functions
+		//f1(t)=2*t^3-3*t^2+1
+		float f1 = 2 * normalTime*normalTime*normalTime - 3 * normalTime*normalTime + 1;
+		//f2(t)=-2*t^3+3*t^2
+		float f2 = -2 * normalTime*normalTime*normalTime + 3 * normalTime*normalTime;
+		//f3(t)=t^3-2*t^2+t
+		float f3 = (normalTime*normalTime*normalTime - 2 * normalTime*normalTime + normalTime)*intervalTime;
+		//f4(t)=t^3-t^2
+		float f4 = (normalTime*normalTime*normalTime - normalTime*normalTime)*intervalTime;
+
+		//find Gh=[P1 P4 R1 R4]
+		Point P1 = controlPoints[nextPoint - 1].position;
+		Point P4 = controlPoints[nextPoint].position;
+
+
+		//figure out the two tangents:
+		//figure out the first tangent:
+		Point y1 = controlPoints[nextPoint - 2].position;
+		Point y2 = controlPoints[nextPoint - 1].position;
+		Point y3 = controlPoints[nextPoint].position;
+		//Point y4 = controlPoints[nextPoint + 1].position;
+
+		t1 = controlPoints[nextPoint - 2].time;
+		t2 = controlPoints[nextPoint - 1].time;
+		float t3 = controlPoints[nextPoint].time;
+		//float t4 = controlPoints[nextPoint + 1].time;
+
+		Vector tangent0;
+		tangent0.x = ((t2 - t1) / (t3 - t1))*((y3.x - y2.x) / (t3 - t2)) + ((t3 - t2) / (t3 - t1))*((y2.x - y1.x) / (t2 - t1));
+		tangent0.y = ((t2 - t1) / (t3 - t1))*((y3.y - y2.y) / (t3 - t2)) + ((t3 - t2) / (t3 - t1))*((y2.y - y1.y) / (t2 - t1));
+		tangent0.z = ((t2 - t1) / (t3 - t1))*((y3.z - y2.z) / (t3 - t2)) + ((t3 - t2) / (t3 - t1))*((y2.z - y1.z) / (t2 - t1));
+		std::cout << "tangent5: " << tangent0 << std::endl;
+
+		Vector tangent1;
+		tangent1.x = -1*((t3 - t1) / (t2 - t1))*((y3.x - y2.x) / (t3 - t2)) + ((t3 - t2) / (t2 - t1))*((y3.x - y1.x) / (t3 - t1));
+		tangent1.y = -1 * ((t3 - t1) / (t2 - t1))*((y3.y - y2.y) / (t3 - t2)) + ((t3 - t2) / (t2 - t1))*((y3.y - y1.y) / (t3 - t1));
+		tangent1.z = -1 * ((t3 - t1) / (t2 - t1))*((y3.z - y2.z) / (t3 - t2)) + ((t3 - t2) / (t2 - t1))*((y3.z - y1.z) / (t3 - t1));
+		std::cout << "tangent6: " << tangent1 << std::endl;
+
+		Vector R1 = tangent0;
+		Vector R4 = tangent1;
+
+		//calculate the x(t), y(t) and z(t) functions
+		//x(t)=[f1 f2 f3 f4]Gx...
+		float xt = f1*P1.x + f2*P4.x + f3*R1.x + f4*R4.x;
+		float yt = f1*P1.y + f2*P4.y + f3*R1.y + f4*R4.y;
+		float zt = f1*P1.z + f2*P4.z + f3*R1.z + f4*R4.z;
+
+		newPosition.x = xt;
+		newPosition.y = yt;
+		newPosition.z = zt;
 		//if next point is right after the first one
-	//}else 
-	if (nextPoint == 1) {
+	} 
+	else if (nextPoint == 1) {
 		float normalTime, intervalTime;
 
 		float t1 = controlPoints[0].time;
@@ -324,15 +378,25 @@ Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
 
 		 //s0
 		Vector tangent0;
-		tangent0.x = (y1.x - y0.x) / (t1 - t0);//((t2 - t0) / (t2 - t1))*((y1.x - y0.x) / (t1 - t0)) - ((t1 - t0) / (t2 - t1))*((y2.x - y0.x) / (t2 - t0));
-		tangent0.y = (y1.y - y0.y) / (t1 - t0);//((t2 - t0) / (t2 - t1))*((y1.y - y0.y) / (t1 - t0)) - ((t1 - t0) / (t2 - t1))*((y2.y - y0.y) / (t2 - t0));
-		tangent0.z = (y1.z - y0.z) / (t1 - t0);//((t2 - t0) / (t2 - t1))*((y1.z - y0.z) / (t1 - t0)) - ((t1 - t0) / (t2 - t1))*((y2.z - y0.z) / (t2 - t0));
+		tangent0.x = ((t2 - t0) / (t2 - t1))*((y1.x - y0.x) / (t1 - t0)) - ((t1 - t0) / (t2 - t1))*((y2.x - y0.x) / (t2 - t0));
+		tangent0.y = ((t2 - t0) / (t2 - t1))*((y1.y - y0.y) / (t1 - t0)) - ((t1 - t0) / (t2 - t1))*((y2.y - y0.y) / (t2 - t0));
+		tangent0.z = ((t2 - t0) / (t2 - t1))*((y1.z - y0.z) / (t1 - t0)) - ((t1 - t0) / (t2 - t1))*((y2.z - y0.z) / (t2 - t0));
+		
+		//tangent0.x = (y1.x - y0.x) / (t1 - t0);
+		//tangent0.y = (y1.y - y0.y) / (t1 - t0);
+		//tangent0.z = (y1.z - y0.z) / (t1 - t0);
+		std::cout << "tangent0: " << tangent0 << std::endl;
 
 		//s1
 		Vector tangent1;//= controlPoints[0].tangent;
-		tangent1.x = (y2.x - y0.x) / (t2 - t0);//((t1 - t0) / (t2 - t0))*((y2.x - y1.x) / (t2 - t1)) + ((t2 - t1) / (t2 - t0))*((y1.x - y0.x) / (t1 - t0));
-		tangent1.y = (y2.y - y0.y) / (t2 - t0);//((t1 - t0) / (t2 - t0))*((y2.y - y1.y) / (t2 - t1)) + ((t2 - t1) / (t2 - t0))*((y1.y - y0.y) / (t1 - t0));
-		tangent1.z = (y2.z - y0.z) / (t2 - t0);//((t1 - t0) / (t2 - t0))*((y2.z - y1.z) / (t2 - t1)) + ((t2 - t1) / (t2 - t0))*((y1.z - y0.z) / (t1 - t0));
+		tangent1.x = ((t1 - t0) / (t2 - t0))*((y2.x - y1.x) / (t2 - t1)) + ((t2 - t1) / (t2 - t0))*((y1.x - y0.x) / (t1 - t0));
+		tangent1.y = ((t1 - t0) / (t2 - t0))*((y2.y - y1.y) / (t2 - t1)) + ((t2 - t1) / (t2 - t0))*((y1.y - y0.y) / (t1 - t0));
+		tangent1.z = ((t1 - t0) / (t2 - t0))*((y2.z - y1.z) / (t2 - t1)) + ((t2 - t1) / (t2 - t0))*((y1.z - y0.z) / (t1 - t0));
+		
+		//tangent1.x = (y2.x - y0.x) / (t2 - t0);
+		//tangent1.y = (y2.y - y0.y) / (t2 - t0);
+		//tangent1.z = (y2.z - y0.z) / (t2 - t0);
+		std::cout << "tangent1: " << tangent1 << std::endl;
 
 		Vector R1 = tangent0;
 		Vector R4 = tangent1;
@@ -392,15 +456,17 @@ Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
 		float t4 = controlPoints[nextPoint + 1].time;
 
 		Vector tangent0;
-		tangent0.x = (y3.x - y1.x) / (t3 - t1);//((t2 - t1) / (t3 - t1))*((y3.x - y2.x) / (t3 - t2)) + ((t3 - t2) / (t3 - t1))*((y2.x - y1.x) / (t2 - t1));
-		tangent0.y = (y3.y - y1.y) / (t3 - t1);//((t2 - t1) / (t3 - t1))*((y3.y - y2.y) / (t3 - t2)) + ((t3 - t2) / (t3 - t1))*((y2.y - y1.y) / (t2 - t1));
-		tangent0.z = (y3.z - y1.z) / (t3 - t1);//((t2 - t1) / (t3 - t1))*((y3.z - y2.z) / (t3 - t2)) + ((t3 - t2) / (t3 - t1))*((y2.z - y1.z) / (t2 - t1));
+		tangent0.x = ((t2 - t1) / (t3 - t1))*((y3.x - y2.x) / (t3 - t2)) + ((t3 - t2) / (t3 - t1))*((y2.x - y1.x) / (t2 - t1));
+		tangent0.y = ((t2 - t1) / (t3 - t1))*((y3.y - y2.y) / (t3 - t2)) + ((t3 - t2) / (t3 - t1))*((y2.y - y1.y) / (t2 - t1));
+		tangent0.z = ((t2 - t1) / (t3 - t1))*((y3.z - y2.z) / (t3 - t2)) + ((t3 - t2) / (t3 - t1))*((y2.z - y1.z) / (t2 - t1));
+		std::cout << "tangent3: " << tangent0 << std::endl;
 
 		Vector tangent1;
-		tangent1.x = (y4.x - y2.x) / (t4 - t2);//((t3 - t2) / (t4 - t2))*((y4.x - y3.x) / (t4 - t3)) + ((t4 - t3) / (t4 - t2))*((y3.x - y2.x) / (t3 - t2));
-		tangent1.y = (y4.y - y2.y) / (t4 - t2);//((t3 - t2) / (t4 - t2))*((y4.y - y3.y) / (t4 - t3)) + ((t4 - t3) / (t4 - t2))*((y3.y - y2.y) / (t3 - t2));
-		tangent1.z = (y4.z - y2.z) / (t4 - t2);//((t3 - t2) / (t4 - t2))*((y4.z - y3.z) / (t4 - t3)) + ((t4 - t3) / (t4 - t2))*((y3.z - y2.z) / (t3 - t2));
-		
+		tangent1.x = ((t3 - t2) / (t4 - t2))*((y4.x - y3.x) / (t4 - t3)) + ((t4 - t3) / (t4 - t2))*((y3.x - y2.x) / (t3 - t2));
+		tangent1.y = ((t3 - t2) / (t4 - t2))*((y4.y - y3.y) / (t4 - t3)) + ((t4 - t3) / (t4 - t2))*((y3.y - y2.y) / (t3 - t2));
+		tangent1.z = ((t3 - t2) / (t4 - t2))*((y4.z - y3.z) / (t4 - t3)) + ((t4 - t3) / (t4 - t2))*((y3.z - y2.z) / (t3 - t2));
+		std::cout << "tangent4: " << tangent1 << std::endl;
+
 		Vector R1 = tangent0;
 		Vector R4 = tangent1;
 
