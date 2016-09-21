@@ -44,7 +44,7 @@ void Curve::addControlPoints(const std::vector<CurvePoint>& inputPoints)
 void Curve::drawCurve(Color curveColor, float curveThickness, int window)
 {
 #ifdef ENABLE_GUI
-	Points firstpoint = controlPoints[0];
+	Point firstpoint = controlPoints[0];
 
 	if (checkRobust()) 
 	{
@@ -137,7 +137,7 @@ bool Curve::checkRobust()
 	}
 
 
-	return true;
+	    return true;
 }
 
 // Find the current time interval (i.e. index of the next control point to follow according to current time)
@@ -168,7 +168,7 @@ Point Curve::useHermiteCurve(const unsigned int nextPoint, const float time)
 	float intervalTime = controlPoints[nextPoint].time - controlPoints[nextPoint - 1].time;
 	float normalTime = normT / intervalTime;
 	
-	// basis functions for hermite curves based on slides
+	// basis/blending functions for hermite curves based on slides
 	/*
 		f0(t) = 2t^3 - 3t^2 +1
 		f1(t) = -2t^3 + 3t^2
@@ -179,10 +179,10 @@ Point Curve::useHermiteCurve(const unsigned int nextPoint, const float time)
 
 	float f0 = 2 * pow(normalTime, 3) - 3 * pow(normalTime, 2) + 1;
 	float f1 = -2 * pow(normalTime, 3) + 3 * pow(normalTime, 2);
-	float f2 = pow(normalTime, 3) - 2pow(normalTime, 2) + normalTime;
+	float f2 = pow(normalTime, 3) - 2*pow(normalTime, 2) + normalTime;
 	float f3 = pow(normalTime, 3) - pow(normalTime, 2);
 
-	// Hermite Curve Blending Function
+	
 
 	newPosition = ((f0*controlPoints[nextPoint - 1].position) + (f1*controlPoints[nextPoint].position)
 		+ ((f2*controlPoints[nextPoint - 1].tangent)*(intervalTime)) + ((f3*controlPoints[nextPoint].tangent)*(intervalTime)));
@@ -195,15 +195,55 @@ Point Curve::useHermiteCurve(const unsigned int nextPoint, const float time)
 Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
 {
 	Point newPosition;
+	float normalTime, intervalTime;
 
-	// Calculate position at t = time on Catmull-Rom curve
-	Point degree0 = (2 * controlPoints[nextPoint - 1].position);
-	Point degree1 = (-1 * controlPoints[nextPoint - 2].position + controlPoint[nextPoint].position);
-	Point degree2 = (2*controlPoints[nextPoint - 2].position - 5*controlPoints[nextPoint - 1].position + 4*controlPoints[nextPoint].position - controlPoints[nextPoint + 1].position);
-	Point degree3 = (-1*controlPoints[nextPoint - 2].position + 3*controlPoints[nextPoint - 1].position - 3*controlPoints[nextPoint].position + controlPoints[nextPoint + 1].position);
+	// Used the rescaling formula found here to normalize : https://en.wikipedia.org/wiki/Feature_scaling
+	float normT = time - controlPoints[nextPoint - 1].time;
+	float intervalTime = controlPoints[nextPoint].time - controlPoints[nextPoint - 1].time;
+	float normalTime = normT / intervalTime;
+	/*
+		Used this website to gain more insight on CatMull-Rom splines :http://www.mvps.org/directx/articles/catmull/
 
-	newPosition = 0.5 * ( degree0 + degree1*time + degree2 * pow(time,2) + degree3 * pow(time,3))
-	
+		For CatMull-Rom Spline we need 4 control points: [P@(n-1), P@(n), P@(n+1), P@(n+2)]
+		A point before time = 0 : p0
+		A point at time = 0     : p1
+		A point at time = 1     : p2
+		A point after time = 1  : p3
+
+	*/
+
+	//Blending Functions for Catmull-Rom Splines were obtained from :http://research.cs.wisc.edu/graphics/Courses/559-f2005/LectureNotes/15-handouts.pdf
+
+	float f0 = (-0.5*normalTime + 1 * pow(normalTime, 2) - 0.5*pow(normalTime, 3));
+	float f1 = (1 - 2.5*pow(normalTime, 2) + 1.5*pow(normalTime, 3));
+	float f2 = (0.5*normalTime - 2 * pow(normalTime, 2) - 1.5*pow(normalTime, 3));
+	float f3 = (-0.5*pow(normalTime, 2) + 0.5*pow(normalTime, 3));
+	Point p0, p1, p2, p3;
+	if (nextPoint == 1)
+	{
+		 p0 = controlPoints[nextPoint - 1].position;
+		 p1 = p0;
+	}
+	else 
+	{
+		 p0 = controlPoints[nextPoint - 2].position;
+		 p1 = controlPoints[nextPoint - 1].position;
+	}
+
+	if (nextPoint == controlPoints.size()-1)
+	{
+
+         p2 = controlPoints[nextPoint].position;
+		 p3 = p2;
+	}
+	else
+	{
+		 p2 = controlPoints[nextPoint].position;
+		 p3 = controlPoints[nextPoint + 1].position;
+	}
+
+	newPosition = (p0*((-0.5*normalTime + 1 * pow(normalTime, 2) - 0.5*pow(normalTime, 3))) + p1*((1 - 2.5*pow(normalTime, 2) + 1.5*pow(normalTime, 3)))
+		+ p2*((0.5*normalTime - 2 * pow(normalTime, 2) - 1.5*pow(normalTime, 3))) + p3*((-0.5*pow(normalTime, 2) + 0.5*pow(normalTime, 3))));
 	// Return result
 	return newPosition;
 }
