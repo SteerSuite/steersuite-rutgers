@@ -44,31 +44,34 @@ void Curve::addControlPoints(const std::vector<CurvePoint>& inputPoints)
 void Curve::drawCurve(Color curveColor, float curveThickness, int window)
 {
 #ifdef ENABLE_GUI
-	Point firstpoint = controlPoints[0];
+	
+			
+	if (checkRobust())
 
-	if (checkRobust()) 
 	{
-		init();
-		for (int i = 0; i <= controlPoints.size() - 1; i = i + window)
+		Point endPoint;
+		for (int i = 1; i < controlPoints.size(); i++)
 		{
-			Point startPosition = controlPoints[i].position;
-			Point lastPostion = controlPoints[i + 1].position; 
-			float startTime = controlPoints[i].time;
-			float endTime = controlPoints[i + 1].time;
+			Point startPosition = controlPoints[i-1].position;
+			float startTime = controlPoints[i-1].time;
+			float endTime = controlPoints[i].time;
 
-			if (type == hermiteCurve) {
-				1astpoint = useHermiteCurve(i*window, controlpoints[i].time); 
-				drawLine(controlPoints[i], controlPoints[i + 1], curvecolor, curveThickness);
-			}
-			if (type == catMullCurve) {
-				1astpoint = useHermiteCurve(i*window, controlpoints[i].time);
-				drawLine(controlPoints[i], controlPoints[i + 1], curvecolor, curveThickness);
+			for (float activeTime = startTime; activeTime <= endTime; activeTime = activeTime + window)
+			{
+
+				if (type == hermiteCurve) {
+			    endPoint = useHermiteCurve(i, activeTime);
+
+				}
+				if (type == catmullCurve) {
+				endPoint = useCatmullCurve(i, activeTime);
+				}
+
+				DrawLib::drawLine(startPosition, endPoint, curveColor, curveThickness);
+				startPosition = endPoint;
 			}
 		}
 	}
-
-	
-
 	// Robustness: make sure there is at least two control point: start and end points
 	// Move on the curve from t=0 to t=finalPoint, using window as step size, and linearly interpolate the curve points
 	// Note that you must draw the whole curve at each frame, that means connecting line segments between each two points on the curve
@@ -78,9 +81,9 @@ void Curve::drawCurve(Color curveColor, float curveThickness, int window)
 }
 
 // Sort controlPoints vector in ascending order: min-first
-void Curve::sortControlPoints()
-	// Using Selection Sort in ascending order as the sorting algorithm
+void Curve::sortControlPoints() 
 {
+	//Using Selection Sort in ascending order as the sorting algorithm
 	for (int i = 0; i < controlPoints.size() - 1; i++)
 	{
 		int j = i;
@@ -93,10 +96,11 @@ void Curve::sortControlPoints()
 			}
 		}
 
-		std::swap(controlPoints[i], controlPoints[j]);
+		std::swap(controlPoints[i].time, controlPoints[j].time);
 	}
 	return;
 }
+
 
 // Calculate the position on curve corresponding to the given time, outputPoint is the resulting position
 // Note that this function should return false if the end of the curve is reached, or no next point can be found
@@ -131,13 +135,11 @@ bool Curve::calculatePoint(Point& outputPoint, float time)
 // Check Roboustness
 bool Curve::checkRobust()
 {
-	if (controlPoints.size() < 2) {
-
+	if (controlPoints.size() < 2) 
+	{
 		return false;
 	}
-
-
-	    return true;
+	return true;
 }
 
 // Find the current time interval (i.e. index of the next control point to follow according to current time)
@@ -151,8 +153,6 @@ bool Curve::findTimeInterval(unsigned int& nextPoint, float time)
 			return true;
 		}
 	}
-
-
 	return false;
 }
 
@@ -160,12 +160,11 @@ bool Curve::findTimeInterval(unsigned int& nextPoint, float time)
 Point Curve::useHermiteCurve(const unsigned int nextPoint, const float time)
 {
 	Point newPosition;
-	float normalTime, intervalTime;
-
+	
 	// Used the rescaling formula found here to normalize : https://en.wikipedia.org/wiki/Feature_scaling
 
 	float normT = time - controlPoints[nextPoint - 1].time;
-	float intervalTime = controlPoints[nextPoint].time - controlPoints[nextPoint - 1].time;
+    float intervalTime = controlPoints[nextPoint].time - controlPoints[nextPoint - 1].time;
 	float normalTime = normT / intervalTime;
 	
 	// basis/blending functions for hermite curves based on slides
@@ -195,7 +194,7 @@ Point Curve::useHermiteCurve(const unsigned int nextPoint, const float time)
 Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
 {
 	Point newPosition;
-	float normalTime, intervalTime;
+	
 
 	// Used the rescaling formula found here to normalize : https://en.wikipedia.org/wiki/Feature_scaling
 	float normT = time - controlPoints[nextPoint - 1].time;
@@ -205,15 +204,20 @@ Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
 		Used this website to gain more insight on CatMull-Rom splines :http://www.mvps.org/directx/articles/catmull/
 
 		For CatMull-Rom Spline we need 4 control points: [P@(n-1), P@(n), P@(n+1), P@(n+2)]
-		A point before time = 0 : p0
-		A point at time = 0     : p1
-		A point at time = 1     : p2
-		A point after time = 1  : p3
+		A point before time = 0 
+		A point at time = 0    
+		A point at time = 1     
+		A point after time = 1  
+
+		Blending Functions for Catmull-Rom Splines were obtained from :http://research.cs.wisc.edu/graphics/Courses/559-f2005/LectureNotes/15-handouts.pdf
+		
+		f0(t) = -0.5t + t^2 - 0.5t^3
+		f1(t) = 1 - 2.5t^2 + 1.5t^3
+		f2(t) = 0.5t -2t^2 - 1.5t^3
+		f3(t) = -0.5t^2 + 0.5t^3
 
 	*/
-
-	//Blending Functions for Catmull-Rom Splines were obtained from :http://research.cs.wisc.edu/graphics/Courses/559-f2005/LectureNotes/15-handouts.pdf
-
+	
 	float f0 = (-0.5*normalTime + 1 * pow(normalTime, 2) - 0.5*pow(normalTime, 3));
 	float f1 = (1 - 2.5*pow(normalTime, 2) + 1.5*pow(normalTime, 3));
 	float f2 = (0.5*normalTime - 2 * pow(normalTime, 2) - 1.5*pow(normalTime, 3));
