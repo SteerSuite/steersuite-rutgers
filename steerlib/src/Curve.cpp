@@ -90,7 +90,7 @@ bool compare(CurvePoint a, CurvePoint b)
 	return (a.time < b.time);
 }
 
-// Sort controlPoints vector in ascending order: min-first
+// Sort controlPoints vector in ascending order
 void Curve::sortControlPoints()
 {
 
@@ -171,8 +171,8 @@ Point Curve::useHermiteCurve(const unsigned int nextPoint, const float time)
 	intervalTime = controlPoints[nextPoint].time - controlPoints[nextPoint - 1].time;
 	normalTime = (time - controlPoints[nextPoint - 1].time) / intervalTime;
 	float h1, h2, h3, h4, t2, t3;
-	t2 = normalTime * normalTime;
-	t3 = normalTime * normalTime * normalTime;
+	t2 = pow(normalTime, 2);
+	t3 = pow(normalTime, 3);
 
 	h1 = (2 * t3) - (3 * t2) + 1;
 	h2 = (-2 * t3) + (3 * t2);
@@ -196,8 +196,8 @@ Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
 	normalTime = (time - controlPoints[nextPoint - 1].time) / intervalTime;
 
 	float h1, h2, h3, h4, t2, t3;
-	t2 = normalTime * normalTime;
-	t3 = normalTime * normalTime * normalTime;
+	t2 = pow(normalTime, 2);
+	t3 = pow(normalTime, 3);
 
 	h1 = (2 * t3) - (3 * t2) + 1;
 	h2 = (-2 * t3) + 3 * t2;
@@ -206,19 +206,18 @@ Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
 
 	Vector s0, s1;
 
+	//For the first point
 	if (nextPoint == 1)
 	{
-		//For the first 3 points
 		s0 = 2 * (controlPoints[nextPoint].position - controlPoints[nextPoint - 1].position)
-			- (controlPoints[nextPoint + 1].position - controlPoints[nextPoint - 1].position) / 2;
+		- (controlPoints[nextPoint + 1].position - controlPoints[nextPoint - 1].position) / 2;
 		s1 = (controlPoints[nextPoint + 1].position - controlPoints[nextPoint - 1].position) / 2;
 	}
-	else if (nextPoint == getControPoints().size() - 1)
+	else if (nextPoint == getControPoints().size() - 1)		//For the ending of point
 	{
-		//A reverse case of the above edge case to account for the last 3 points
 		s0 = (controlPoints[nextPoint].position - controlPoints[nextPoint - 2].position) / 2;
 		s1 = (controlPoints[nextPoint].position - controlPoints[nextPoint - 2].position) / 2
-			- 2 * (controlPoints[nextPoint - 1].position - controlPoints[nextPoint].position);
+		- 2 * (controlPoints[nextPoint - 1].position - controlPoints[nextPoint].position);
 	}
 	else
 	{
@@ -227,9 +226,8 @@ Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
 		s1 = (controlPoints[nextPoint + 1].position - controlPoints[nextPoint - 1].position) / 2;
 	}
 
-	newPosition = h1*controlPoints[nextPoint - 1].position + h2*controlPoints[nextPoint].position
-		+ h3*s0 + h4*s1;
-	// Return result
+	newPosition = h1*controlPoints[nextPoint - 1].position + h2*controlPoints[nextPoint].position + h3*s0 + h4*s1;
+	// Return result position
 	return newPosition;
 }
 
