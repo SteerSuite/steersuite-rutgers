@@ -69,7 +69,7 @@ namespace Util {
 		void addControlPoints(const std::vector<CurvePoint>& inputPoints);
 
 		// Return the controlPoints vector
-		std::vector<CurvePoint> getControPoints() { return controlPoints; }
+		std::vector<CurvePoint> getControlPoints() { return controlPoints; }
 
 		// Draw the curve shape on screen, usign window as step size (bigger window: less accurate shape)
 		void drawCurve(Color curveColor = gOrange, float curveThickness = 2.f, int window = 5);
