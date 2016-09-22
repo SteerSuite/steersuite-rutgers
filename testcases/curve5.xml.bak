@@ -27,7 +27,7 @@
     <up> <x>0</x> <y>1</y> <z>0</z> </up>
     <fovy>45</fovy>
     <targetTangent> <x>0</x> <y>0</y> <z>0</z> </targetTangent>
-    <targetTime>40</targetTime>
+    <targetTime>20</targetTime>
   </suggestedCameraView>
 
   <suggestedCameraView>
@@ -36,7 +36,7 @@
     <up> <x>0</x> <y>1</y> <z>0</z> </up>
     <fovy>45</fovy>
     <targetTangent> <x>-2</x> <y>0</y> <z>0</z> </targetTangent>
-    <targetTime>90</targetTime>
+    <targetTime>70</targetTime>
   </suggestedCameraView>
 
   <suggestedCameraView>
@@ -45,7 +45,7 @@
     <up> <x>0</x> <y>1</y> <z>0</z> </up>
     <fovy>45</fovy>
     <targetTangent> <x>0</x> <y>0</y> <z>0</z> </targetTangent>
-    <targetTime>175</targetTime>
+    <targetTime>100</targetTime>
   </suggestedCameraView>
 
   <agent>

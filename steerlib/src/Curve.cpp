@@ -93,17 +93,6 @@ void Curve::sortControlPoints()
 	 //std::unique(controlPoints.begin(), controlPoints.end(), sameFunction);
 	//controlPoints.resize(std::distance(controlPoints.begin(), it));
 
-	//Print the vector
-	//comment out later..............................................................
-	std::cout << "---------------------------------------------" << std::endl;
-	std::cout << "We are printing the sorted! control Points:" << std::endl;
-	std::cout << "---------------------------------------------" << std::endl;
-	for (std::vector<Util::CurvePoint>::iterator it = controlPoints.begin(); it != controlPoints.end(); ++it) {
-		Util::CurvePoint currentIteration = *it;
-		std::cout << currentIteration.time << std::endl;
-	}
-	//...............................................................................
-
 	return;
 }
 
@@ -144,8 +133,10 @@ bool Curve::checkRobust()
 	if (controlPoints.size() < 2) {
 		return false;
 	}
-	if (controlPoints[0].time < 0) {
-		return false;
+	for (int i = 0; i < controlPoints.size(); i++) {
+		if (controlPoints[i].time < 0) {
+			return false;
+		}
 	}
 
 	return true;
@@ -154,11 +145,6 @@ bool Curve::checkRobust()
 // Find the current time interval (i.e. index of the next control point to follow according to current time)
 bool Curve::findTimeInterval(unsigned int& nextPoint, float time)
 {
-	//Print the time
-	//comment out later..............................................................
-	//std::cout << "the time we are looking for is " << time << std::endl;
-	//...............................................................................
-
 	//if time is negative, return false
 	if (time < 0) {
 		return 0;
@@ -170,22 +156,10 @@ bool Curve::findTimeInterval(unsigned int& nextPoint, float time)
 	//iterate over all the control points and see when time is greater, at which point return 
 	for (int i = 1; i < controlPoints.size(); i++) {
 		if (time <= controlPoints[i].time) {
-			//std::cout << "the time we are looking for is definitely " << time << std::endl;
-			//std::cout << "the controlPoint time at " << i << " is " << controlPoints[i].time <<  std::endl;
 			nextPoint = i;
-			//std::cout << "the next point is " << nextPoint <<  std::endl;
 			return true;
 		}
 	}
-
-	/*if (time > controlPoints.back().time) {
-		return false;
-	}
-	else {
-		for (int i = 1; i < controlPoints.size(); i++) {
-			if()
-		}
-	}*/
 
 	return false;
 }
@@ -193,6 +167,11 @@ bool Curve::findTimeInterval(unsigned int& nextPoint, float time)
 // Implement Hermite curve
 Point Curve::useHermiteCurve(const unsigned int nextPoint, const float time)
 {
+	//error checking
+	if (time < 0 || nextPoint >= controlPoints.size()) {
+		return Point(0,0,0) ;
+	}
+
 	Point newPosition;
 	float normalTime, intervalTime;
 
@@ -252,6 +231,11 @@ Point Curve::useHermiteCurve(const unsigned int nextPoint, const float time)
 // Implement Catmull-Rom curve
 Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
 {
+	//error checking
+	if (time < 0||nextPoint>=controlPoints.size()) {
+		return Point(0, 0, 0);
+	}
+
 	Point newPosition;
 
 	float normalTime, intervalTime;
@@ -291,16 +275,20 @@ Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
 		float t0 = controlPoints[0].time;
 		t1 = controlPoints[1].time;
 
+		std::cout << "t0:" << t0 << "t1:" << t1<<std::endl;
+
 		//first tangent
 		Vector R1 = (P4-P1)/(t1-t0);
 		//last tangent
 		Vector R4 = R1;
+		std::cout << "R1:" << R1 << std::endl;
+		std::cout << "R4:" << R1 << std::endl;
 
 		//calculate the x(t), y(t) and z(t) functions
 		//x(t)=[f1 f2 f3 f4]Gx...
 		newPosition = f1*P1 + f2*P4 + f3*R1 + f4*R4;
 	}
-	if (nextPoint == controlPoints.size()-1) {
+	else if (nextPoint == controlPoints.size()-1) {
 		//find Gh=[P1 P4 R1 R4]
 		Point P1 = controlPoints[nextPoint - 1].position;
 		Point P4 = controlPoints[nextPoint].position;
