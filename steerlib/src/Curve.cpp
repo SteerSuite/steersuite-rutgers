@@ -195,10 +195,10 @@ Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
     float t3 = normalTime * normalTime * normalTime;
    	float t2 = normalTime * normalTime;
 
-    float f1 = (-t3 + 2 * t2 - normalTime) * 0.5;
-   	float f2 = (t3 - 5 * t2 + 2) * 0.5;
-   	float f3 = (-3 * t3 + 4 * t2 + normalTime) * 0.5;
-   	float f4 = (t3 - t2) * 0.5;
+    float f1 = (-t3 + 2 * t2 - normalTime)/2;
+   	float f2 = (3 * t3 - 5 * t2 + 2)/2;
+   	float f3 = (-3 * t3 + 4 * t2 + normalTime)/2;
+   	float f4 = (t3 - t2)/2;
 
    	Point p1, p2, p3, p4;
    	if (nextPoint == 1) {
