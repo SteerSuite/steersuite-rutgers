@@ -56,7 +56,7 @@ void Curve::drawCurve(Color curveColor, float curveThickness, int window)
 			float startTime = controlPoints[i-1].time;
 			float endTime = controlPoints[i].time;
 
-			for (float activeTime = startTime; activeTime <= endTime; activeTime = activeTime + window)
+			for (float activeTime = startTime; activeTime <= endTime; activeTime = activeTime + (0.005*window))
 			{
 
 				if (type == hermiteCurve) {
