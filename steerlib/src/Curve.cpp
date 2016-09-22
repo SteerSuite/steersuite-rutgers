@@ -49,7 +49,7 @@ void Curve::drawCurve(Color curveColor, float curveThickness, int window)
 	if (checkRobust())
 
 	{
-		Point endPoint;
+		Point endPosition;
 		for (int i = 1; i < controlPoints.size(); i++)
 		{
 			Point startPosition = controlPoints[i-1].position;
@@ -60,15 +60,15 @@ void Curve::drawCurve(Color curveColor, float curveThickness, int window)
 			{
 
 				if (type == hermiteCurve) {
-			    endPoint = useHermiteCurve(i, activeTime);
+			    endPosition = useHermiteCurve(i, activeTime);
 
 				}
 				if (type == catmullCurve) {
-				endPoint = useCatmullCurve(i, activeTime);
+				endPosition = useCatmullCurve(i, activeTime);
 				}
 
-				DrawLib::drawLine(startPosition, endPoint, curveColor, curveThickness);
-				startPosition = endPoint;
+				DrawLib::drawLine(startPosition, endPosition, curveColor, curveThickness);
+				startPosition = endPosition;
 			}
 		}
 	}
@@ -134,6 +134,8 @@ bool Curve::calculatePoint(Point& outputPoint, float time)
 
 // Check Roboustness
 bool Curve::checkRobust()
+
+//make sure there is at least two control point: start and end points
 {
 	if (controlPoints.size() < 2) 
 	{
@@ -147,7 +149,7 @@ bool Curve::findTimeInterval(unsigned int& nextPoint, float time)
 {
 	for (int i = 0; i < controlPoints.size(); i++)
 	{
-		if (controlPoints[i].time > time)
+		if (time <= controlPoints[i].time)
 		{
 			nextPoint = i;
 			return true;
@@ -163,9 +165,9 @@ Point Curve::useHermiteCurve(const unsigned int nextPoint, const float time)
 	
 	// Used the rescaling formula found here to normalize : https://en.wikipedia.org/wiki/Feature_scaling
 
-	float normT = time - controlPoints[nextPoint - 1].time;
+	
     float intervalTime = controlPoints[nextPoint].time - controlPoints[nextPoint - 1].time;
-	float normalTime = normT / intervalTime;
+	float normalTime = (time - controlPoints[nextPoint - 1].time) / (intervalTime);
 	
 	// basis/blending functions for hermite curves based on slides
 	/*
@@ -197,9 +199,9 @@ Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
 	
 
 	// Used the rescaling formula found here to normalize : https://en.wikipedia.org/wiki/Feature_scaling
-	float normT = time - controlPoints[nextPoint - 1].time;
+	
 	float intervalTime = controlPoints[nextPoint].time - controlPoints[nextPoint - 1].time;
-	float normalTime = normT / intervalTime;
+	float normalTime = (time - controlPoints[nextPoint - 1].time) / (intervalTime);
 	/*
 		Used this website to gain more insight on CatMull-Rom splines :http://www.mvps.org/directx/articles/catmull/
 
