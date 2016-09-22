@@ -48,6 +48,37 @@ void PolygonObstacle::draw()
 	Util::DrawLib::drawLine(this->_points.at(0),
 			this->_points.at(this->_points.size()-1), Util::gDarkMagenta, 3.0);
 			*/
+
+	Util::Point height_dist(0.0, 1.0, 0.0);
+	for (size_t _vert = 0; _vert < this->_points.size() - 1; _vert++)
+	{
+		Util::Point p0, p1;
+		p0 = this->_points.at(_vert);
+		p1 = this->_points.at(_vert + 1);
+		Util::DrawLib::drawLine(p0, p1, Util::gBlack, 2.0);
+		Util::DrawLib::drawLine(p0 + height_dist, p1 + height_dist, Util::gBlack, 2.0);
+		Util::DrawLib::drawLine(p0, p0 + height_dist, Util::gBlack, 2.0);
+		glDisable(GL_CULL_FACE);
+		DrawLib::glColor(Util::gDarkMagenta);
+		Util::DrawLib::drawQuad(p0, p1, p1 + height_dist, p0 + height_dist);
+		glEnable(GL_CULL_FACE);
+
+	}
+
+
+	if (isConvex_)
+	{
+		Util::Point p0, p1;
+		p0 = this->_points.at(this->_points.size() - 1);
+		p1 = this->_points.at(0);
+		Util::DrawLib::drawLine(p0, p1, Util::gBlack, 2.0);
+		Util::DrawLib::drawLine(p0 + height_dist, p1 + height_dist, Util::gBlack, 2.0);
+		Util::DrawLib::drawLine(p0, p0 + height_dist, Util::gBlack, 2.0);
+		glDisable(GL_CULL_FACE);
+		DrawLib::glColor(Util::gDarkMagenta);
+		Util::DrawLib::drawQuad(p0, p1, p1 + height_dist, p0 + height_dist);
+		glEnable(GL_CULL_FACE);
+	}
 }
 
 std::pair<std::vector<Util::Point>,std::vector<size_t> > PolygonObstacle::getStaticGeometry()
