@@ -137,7 +137,7 @@ bool Curve::checkRobust()
 
 //make sure there is at least two control point: start and end points
 {
-	if (controlPoints.size() < 2) 
+	if (controlPoints.size() <= 1) 
 	{
 		return false;
 	}
@@ -211,18 +211,19 @@ Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
 		A point at time = 1     
 		A point after time = 1  
 
-		Blending Functions for Catmull-Rom Splines were obtained from :http://research.cs.wisc.edu/graphics/Courses/559-f2005/LectureNotes/15-handouts.pdf
+		Blending Functions for Catmull-Rom Splines were obtained from :https://www.tsplines.com/technology/edu/BlendingFunctions.pdf
+		Apparently they're also known as Overhauser Curves 
 		
 		f0(t) = -0.5t + t^2 - 0.5t^3
 		f1(t) = 1 - 2.5t^2 + 1.5t^3
-		f2(t) = 0.5t -2t^2 - 1.5t^3
+		f2(t) = 0.5t + 2t^2 - 1.5t^3
 		f3(t) = -0.5t^2 + 0.5t^3
 
 	*/
 	
 	float f0 = (-0.5*normalTime + 1 * pow(normalTime, 2) - 0.5*pow(normalTime, 3));
 	float f1 = (1 - 2.5*pow(normalTime, 2) + 1.5*pow(normalTime, 3));
-	float f2 = (0.5*normalTime - 2 * pow(normalTime, 2) - 1.5*pow(normalTime, 3));
+	float f2 = (0.5*normalTime + 2 * pow(normalTime, 2) - 1.5*pow(normalTime, 3));
 	float f3 = (-0.5*pow(normalTime, 2) + 0.5*pow(normalTime, 3));
 	Point p0, p1, p2, p3;
 	if (nextPoint == 1)
@@ -248,8 +249,8 @@ Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
 		 p3 = controlPoints[nextPoint + 1].position;
 	}
 
-	newPosition = (p0*((-0.5*normalTime + 1 * pow(normalTime, 2) - 0.5*pow(normalTime, 3))) + p1*((1 - 2.5*pow(normalTime, 2) + 1.5*pow(normalTime, 3)))
-		+ p2*((0.5*normalTime - 2 * pow(normalTime, 2) - 1.5*pow(normalTime, 3))) + p3*((-0.5*pow(normalTime, 2) + 0.5*pow(normalTime, 3))));
+	newPosition = ((p0*(-0.5*normalTime + 1 * pow(normalTime, 2) - 0.5*pow(normalTime, 3)) + (p1*(1 - 2.5*pow(normalTime, 2) + 1.5*pow(normalTime, 3)))
+		+ (p2*(0.5*normalTime + 2 * pow(normalTime, 2) - 1.5*pow(normalTime, 3))) + (p3*(-0.5*pow(normalTime, 2) + 0.5*pow(normalTime, 3)))));
 	// Return result
 	return newPosition;
 }

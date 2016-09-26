@@ -26,7 +26,7 @@ CurveAgent::CurveAgent()
 	_enabled = false;
 
 	// Set curve type here
-	curve.setType(Util::hermiteCurve);
+	curve.setType(Util::catmullCurve);
 	//curve.setType(Util::catmullCurve);
 }
 
