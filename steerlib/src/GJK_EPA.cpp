@@ -113,44 +113,60 @@ Edge findCloestEdge(std::vector<Util::Vector>& simplex)
 
 bool onEdge(Util::Vector A, Util::Vector B)
 {
-	float rx = 0, ry = 0, rz = 0;
-	bool ex = false, ey = false, ez = false;
+	float x_ratio = 0, y_ratio = 0, z_ratio = 0;
+	bool x_para = false, y_para = false, z_para = false;
 	Util::Vector Origin(0, 0, 0);
 	Util::Vector AB = B - A;
 	Util::Vector AO = Origin - A;
 	int rsize;
 
 	if (AB.x == 0 || AO.x == 0) {
-		if (!(AB.x == 0 && AO.x == 0))
+		if (AB.x == 0 && AO.x == 0)
+		{
+			x_para = true;
+		}
+		else
+		{
 			return false;
-		ex = true;
+		}
 	}
 	else
-		rx = AO.x / AB.x;
+		x_ratio = AO.x / AB.x;
 
 	if (AB.y == 0 || AO.y == 0) {
-		if (!(AB.y == 0 && AO.y == 0))
+		if (AB.y == 0 && AO.y == 0)
+		{
+			y_para = true;
+
+		}
+		else
+		{
 			return false;
-		ey = true;
+		}
 	}
 	else
-		ry = AO.y / AB.y;
+		y_ratio = AO.y / AB.y;
 
 	if (AB.z == 0 || AO.z == 0) {
-		if (!(AB.z == 0 && AO.z == 0))
+		if (AB.z == 0 && AO.z == 0)
+		{
+			z_para = true;
+		}
+		else
+		{
 			return false;
-		ez = true;
+		}
 	}
 	else
-		rz = AO.z / AB.z;
+		z_ratio = AO.z / AB.z;
 
 	std::vector<float> r;
-	if (!ex)
-		r.push_back(rx);
-	if (!ey)
-		r.push_back(ry);
-	if (!ez)
-		r.push_back(rz);
+	if (!x_para)
+		r.push_back(x_ratio);
+	if (!y_para)
+		r.push_back(y_ratio);
+	if (!z_para)
+		r.push_back(z_ratio);
 
 	rsize = r.size();
 	if (rsize == 1)
