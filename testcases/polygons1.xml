@@ -1,0 +1,83 @@
+<!--
+  @author VaHiD Acd bi	zIzI
+-->
+
+<SteerBenchTestCase xmlns="http://www.magix.ucla.edu/steerbench"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://www.magix.ucla.edu/steerbench 
+                                        TestCaseSchema.xsd">
+
+  <header>
+    <version>1.0</version>
+    <name>simple-1</name>
+    <worldBounds>
+      <xmin>-100</xmin>
+      <xmax>100</xmax>
+      <ymin>0</ymin>
+      <ymax>0</ymax>
+      <zmin>-100</zmin>
+      <zmax>100</zmax>
+    </worldBounds>
+  </header>
+
+ 
+  <polygonObstacle isClosed="true">
+	<vertex> <x>-2.0</x> <y>0.0</y> <z>-1.0</z> </vertex>
+	<vertex> <x>-1.0</x> <y>0.0</y> <z>1.0</z> </vertex>
+	<vertex> <x>1.0</x> <y>0.0</y> <z>1.0</z> </vertex>
+	<vertex> <x>2.0</x> <y>0.0</y> <z>-1.0</z> </vertex>
+	<vertex> <x>0.0</x> <y>0.0</y> <z>-2.0</z> </vertex>
+  </polygonObstacle>
+
+  <polygonObstacle isClosed="true">
+	<vertex> <x>0.0</x> <y>0.0</y> <z>0.0</z> </vertex>
+	<vertex> <x>2.0</x> <y>0.0</y> <z>2.0</z> </vertex>
+	<vertex> <x>4.0</x> <y>0.0</y> <z>1.0</z> </vertex>
+	<vertex> <x>4.0</x> <y>0.0</y> <z>-1.0</z> </vertex>
+	<vertex> <x>2.0</x> <y>0.0</y> <z>-2.0</z> </vertex>
+  </polygonObstacle>
+
+  <polygonObstacle isClosed="true">
+	<vertex> <x>3.0</x> <y>0.0</y> <z>0.0</z> </vertex>
+	<vertex> <x>5.0</x> <y>0.0</y> <z>2.0</z> </vertex>
+	<vertex> <x>7.0</x> <y>0.0</y> <z>1.0</z> </vertex>
+	<vertex> <x>7.0</x> <y>0.0</y> <z>-1.0</z> </vertex>
+	<vertex> <x>5.0</x> <y>0.0</y> <z>-2.0</z> </vertex>
+  </polygonObstacle>
+
+  <polygonObstacle isClosed="true">
+	<vertex> <x>3.0</x> <y>0.0</y> <z>-5.0</z> </vertex>
+	<vertex> <x>5.0</x> <y>0.0</y> <z>-3.0</z> </vertex>
+	<vertex> <x>7.0</x> <y>0.0</y> <z>-4.0</z> </vertex>
+	<vertex> <x>7.0</x> <y>0.0</y> <z>-6.0</z> </vertex>
+	<vertex> <x>5.0</x> <y>0.0</y> <z>-7.0</z> </vertex>
+  </polygonObstacle>
+
+  <polygonObstacle isClosed="true">
+	<vertex> <x>0.0</x> <y>0.0</y> <z>6.0</z> </vertex>
+	<vertex> <x>2.0</x> <y>0.0</y> <z>8.0</z> </vertex>
+	<vertex> <x>5.0</x> <y>0.0</y> <z>7.0</z> </vertex>
+	<vertex> <x>5.0</x> <y>0.0</y> <z>5.0</z> </vertex>
+	<vertex> <x>2.0</x> <y>0.0</y> <z>4.0</z> </vertex>
+  </polygonObstacle>
+
+ <polygonObstacle isClosed="true">
+	<vertex> <x>-3.0</x> <y>0.0</y> <z>1.0</z> </vertex>
+	<vertex> <x>0.0</x> <y>0.0</y> <z>1.0</z> </vertex>
+	<vertex> <x>1.0</x> <y>0.0</y> <z>0.0</z> </vertex>
+	<vertex> <x>0.0</x> <y>0.0</y> <z>-1.0</z> </vertex>
+	<vertex> <x>-3.0</x> <y>0.0</y> <z>-1.0</z> </vertex>
+ </polygonObstacle>
+
+ 
+  <agent>
+    <name>A</name>
+    <initialConditions>
+      <radius>0.5</radius>
+      <position> <x>-1</x> <y>0</y> <z>-0</z> </position>
+      <direction> <x>0</x> <y>0</y> <z>-1</z> </direction>
+      <speed>0</speed>
+    </initialConditions>
+  </agent>
+ 
+</SteerBenchTestCase>
