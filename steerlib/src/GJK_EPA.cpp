@@ -26,16 +26,18 @@ bool SteerLib::GJK_EPA::intersect(float& return_penetration_depth, Util::Vector&
 	}
 
 }
-//Used to find the farthest point in a shape along a given direction. This is needed to find the Minowski Difference.
+//Used to find the farthest point in a shape along a given direction. This is needed to find the Minkowski Difference.
 Util::Vector getFarthestPoint(const std::vector<Util::Vector>& shape, const Util::Vector& direction)
 {
-	Util::Vector farthestPoint(0, 0, 0);
+
 
 	float farthestDistance = 0;
 	int index = 0;
+	int i = 0;
 
 	do
 	{
+		
 		float check = dot(shape[i], direction);
 		if (check > farthestDistance)
 		{
@@ -51,7 +53,7 @@ Util::Vector getFarthestPoint(const std::vector<Util::Vector>& shape, const Util
 
 }
 
-//Solves for the Minowski Difference.
+//Solves for the Minkowski Difference.
 Util::Vector support(const std::vector<Util::Vector>& shapeA, const std::vector<Util::Vector>& shapeB, const Util::Vector& direction)
 {
 	Vector opposite = (-1) * direction;
@@ -61,5 +63,29 @@ Util::Vector support(const std::vector<Util::Vector>& shapeA, const std::vector<
 
 bool SteerLib::GJK_EPA::GJK(const std::vector<Util::Vector>& _shapeA, const std::vector<Util::Vector>& _shapeB, std::vector<Util::Vector>& simplex)
 {
+	Util::Vector dir(0, 0, 1);
+	Util::Vector newdir = (-1) * dir;
+	Util::Vector i = support(_shapeA, _shapeB, dir);
+	
+	simplex.push_back(i);
 
+	do
+	{
+		i = support(_shapeA, _shapeB, dir);
+		simplex.push_back(i);
+
+		if (originInside(newdir, simplex)) 
+		{
+			return true;
+		}
+
+		else
+		{
+			if (dot(simplex.back(), newdir)<= 0) 
+			{
+				return false;
+			}
+		}
+
+	} while (true);
 }
