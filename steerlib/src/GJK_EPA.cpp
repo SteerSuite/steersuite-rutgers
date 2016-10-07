@@ -1,5 +1,5 @@
 #include "obstacles/GJK_EPA.h"
-
+#include <math.h>
 
 SteerLib::GJK_EPA::GJK_EPA()
 {
@@ -88,4 +88,19 @@ bool SteerLib::GJK_EPA::GJK(const std::vector<Util::Vector>& _shapeA, const std:
 		}
 
 	} while (true);
+}
+
+bool SteerLib::GJK_EPA::originInside(Util::Vector& d, std::vector<Util::Vector>& simplex)
+{
+	//Watch video, need to find if the shape has the origin contained inside of it, based on the size of the simplex.
+}
+
+float SteerLib::GJK_EPA:edgeDistance(std::vector<Util::Vector> s, Util::Vector& closestEdge, int& closestEdgeIndex)
+{
+
+}
+
+float SteerLib::GJK_EPA::EPA(const std::vector<Util::Vector>& _shapeA, const std::vector<Util::Vector>& _shapeB, const std::vector<Util::Vector>& simplex, Util::Vector& penetration_vector)
+{
+
 }
