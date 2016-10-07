@@ -77,7 +77,7 @@ float SteerLib::GJK_EPA::findClosestEdgeDistance(std::vector<Util::Vector> s, Ut
 
 bool SteerLib::GJK_EPA::GJK(const std::vector<Util::Vector>& _shapeA, const std::vector<Util::Vector>& _shapeB, std::vector<Util::Vector>& simplex)
 {
-	Util::Vector DirectionVector(1, 0, -1);
+	Util::Vector DirectionVector=_shapeA[0]-_shapeB[0];
 	simplex.push_back(Support(_shapeA, _shapeB, DirectionVector));
 	Util::Vector newDirection = -1.0f * DirectionVector;
 
@@ -135,36 +135,36 @@ Util::Vector SteerLib::GJK_EPA::Support(const std::vector<Util::Vector>& ShapeA,
 
 bool SteerLib::GJK_EPA::CheckContainsOrigin(Util::Vector& Direction, std::vector<Util::Vector>& simplex)
 {
-	Util::Vector first = simplex.back();
-	Util::Vector firstFromOrigin = -1 * first;
-	Util::Vector second;
-	Util::Vector third;
-	Util::Vector firstSecond;
-	Util::Vector firstThird;
+	Util::Vector a = simplex.back();
+	Util::Vector ao = -1 * a;
+	Util::Vector b;
+	Util::Vector c;
+	Util::Vector ab;
+	Util::Vector ac;
 
 	if (simplex.size() == 3)
 	{
-		second = simplex[1];
-		third = simplex[0];
-		firstSecond = second - first;
-		firstThird = third - first;
+		b = simplex[1];
+		c = simplex[0];
+		ab = b - a;
+		ac = c - a;
 
-		Direction = Util::Vector(firstSecond.z, firstSecond.y, -1 * firstSecond.x);
+		Direction = Util::Vector(-1*ab.z, ab.y, ab.x);
 
-		if (Direction * third > 0)
+		if (Direction * c > 0)
 		{
 			Direction = Direction * -1;
 		}
 
-		if (Direction * firstFromOrigin > 0)
+		if (Direction * ao > 0)
 		{
 			simplex.erase(simplex.begin() + 0);
 			return false;
 		}
 
-		Direction = Util::Vector(firstThird.z, firstThird.y, -1 * firstThird.x);
+		Direction = Util::Vector(ac.z, ac.y, -1 * ac.x);
 
-		if (Direction * firstFromOrigin > 0)
+		if (Direction * ao > 0)
 		{
 			simplex.erase(simplex.begin() + 1);
 			return false;
@@ -174,12 +174,12 @@ bool SteerLib::GJK_EPA::CheckContainsOrigin(Util::Vector& Direction, std::vector
 	}
 	else //line segment
 	{
-		second = simplex[0];
-		firstSecond = second - first;
+		b = simplex[0];
+		ab = b - a;
 
-		Direction = Util::Vector(firstSecond.z, firstSecond.y, -1 * firstSecond.x);
+		Direction = Util::Vector(-1*ab.z, ab.y, ab.x);
 
-		if (Direction * firstFromOrigin < 0)
+		if (Direction * ao < 0)
 		{
 			Direction = -1 * Direction;
 		}
