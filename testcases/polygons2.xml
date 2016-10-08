@@ -25,6 +25,10 @@
 	<vertex> <x>3.0</x> <y>0.0</y> <z>4.0</z> </vertex>
 	<vertex> <x>6.0</x> <y>0.0</y> <z>0.0</z> </vertex>	
         <vertex> <x>3.0</x> <y>0.0</y> <z>0.0</z> </vertex>
+  </polygonObstacle>
+
+  <polygonObstacle isClosed="true">
+        <vertex> <x>3.0</x> <y>0.0</y> <z>0.0</z> </vertex>
 	<vertex> <x>0.0</x> <y>0.0</y> <z>0.0</z> </vertex>
 	<vertex> <x>3.0</x> <y>0.0</y> <z>-4.0</z> </vertex>
   </polygonObstacle>
