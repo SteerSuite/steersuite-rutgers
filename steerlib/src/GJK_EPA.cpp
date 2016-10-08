@@ -150,7 +150,7 @@ bool SteerLib::GJK_EPA::intersect(float& return_penetration_depth, Util::Vector&
 		/* For any direction, projection needs to include the origin.
 		 * Otherwise there's a separating line/plane between the shape
 		 * and the origin */
-		if (((-dir) * (-point)) < 0)
+		if (((-dir) * (-point)) <= 0)
 			return false;
 		simplex.push_back(point);
 	} while (!testSimplex(simplex, dir));
