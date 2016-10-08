@@ -1,6 +1,6 @@
 #include "obstacles/GJK_EPA.h"
 #include <math.h>
-#include "include/util/Geometry.h"
+
 
 SteerLib::GJK_EPA::GJK_EPA()
 {
@@ -114,8 +114,8 @@ bool SteerLib::GJK_EPA::originInside(Util::Vector& d, std::vector<Util::Vector>&
 		ac = c - a;
 
 		//calculate the norms of the edges
-		abNorm = tripleProduct(ac, ab, ab);
-		acNorm = tripleProduct(ab, ac, ac);
+		abNorm = tripleProd(ac, ab, ab);
+		acNorm = tripleProd(ab, ac, ac);
 		//
 		if (abNorm.dot(a_neg) > 0) {
 			//erase the c vector
@@ -143,7 +143,7 @@ bool SteerLib::GJK_EPA::originInside(Util::Vector& d, std::vector<Util::Vector>&
 		//calculate AB
 		ab = b - a;
 		// normal vector  to ab in the direction pointing toward the origin
-		abNorm = tripleProduct(ab, a_neg, ab);
+		abNorm = tripleProd(ab, a_neg, ab);
 		//set the direction to be equal to abNorm
 		d = abNorm;
 	}
@@ -220,4 +220,8 @@ float SteerLib::GJK_EPA::EPA(const std::vector<Util::Vector>& _shapeA, const std
 
 
 	}
+
+Util::Vector tripleProd(Util::Vector& a, Util::Vector& b, Util::Vector& c)
+{
+	return b*dot(a, c) - c*dot(a, b);
 }

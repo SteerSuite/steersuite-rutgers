@@ -25,6 +25,15 @@ namespace SteerLib
 	public:
 		GJK_EPA();
 
+		static Util::Vector getFarthestPoint(const std::vector<Util::Vector>& shape, const Util::Vector& direction);
+		static Util::Vector support(const std::vector<Util::Vector>& shapeA, const std::vector<Util::Vector>& shapeB, const Util::Vector& direction);
+		static bool SteerLib::GJK_EPA::GJK(const std::vector<Util::Vector>& _shapeA, const std::vector<Util::Vector>& _shapeB, std::vector<Util::Vector>& simplex);
+		static bool SteerLib::GJK_EPA::originInside(Util::Vector& d, std::vector<Util::Vector>& simplex);
+		static float SteerLib::GJK_EPA:closestEdge(std::vector<Util::Vector> s, Util::Vector& closestEdge, int& closestEdgeIndex);
+		static float SteerLib::GJK_EPA::EPA(const std::vector<Util::Vector>& _shapeA, const std::vector<Util::Vector>& _shapeB, const std::vector<Util::Vector>& simplex, Util::Vector& penetration_vector, float& depth);
+		static Util::Vector tripleProd(Util::Vector& a, Util::Vector& b, Util::Vector& c);
+
+
 		/*
 		*
 		*  DO NOT CHANGE THE FUNCTION DEFINITION FOR intersect()
