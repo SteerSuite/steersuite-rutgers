@@ -2,8 +2,10 @@
 
 #include <algorithm>
 #include <cassert>
+#include <cmath>
 #include <deque>
-#include <unordered_map>
+#include <list>
+#include <tuple>
 
 using Object = ::std::vector<Util::Vector>;
 
@@ -28,15 +30,6 @@ namespace {
 	                             const Util::Vector &d)
 	{
 		return supportVector(a, d) - supportVector(b, -d);
-	}
-
-	Util::Vector normalInY(const Util::Vector &v)
-	{
-		assert(v.y == 0);
-		Util::Vector y(0, 1, 0);
-		Util::Vector res = cross(v, y);
-		assert(res.y == 0);
-		return res;
 	}
 
 	/* Return true if the simplex contains origin */
@@ -120,6 +113,20 @@ namespace {
 			assert(false);
 		}
 	}
+
+	float distance_line_point(::std::pair<Util::Vector, Util::Vector> line,
+	                          Util::Vector point = Util::Vector())
+	{
+		assert(line.first.y == 0);
+		assert(line.second.y == 0);
+		assert(point.y == 0);
+		return ::std::abs((line.second.z - line.first.z) * point.x -
+		                  (line.second.x - line.first.x) * point.z +
+		                  line.second.x * line.first.z +
+		                  line.second.z * line.first.x) /
+		       ::std::sqrt(::std::pow(line.second.z - line.first.z, 2) +
+		                   ::std::pow(line.second.x - line.first.x, 2));
+	}
 }
 
 
@@ -150,6 +157,36 @@ bool SteerLib::GJK_EPA::intersect(float& return_penetration_depth, Util::Vector&
 
 	/* We only reach this place if there is a collision.
 	 * Run EPA to get the vector and depth */
+
+	/* Convert to list since we'll be adding points in the middle */
+	::std::list<Util::Vector> polytope(simplex.begin(), simplex.end());
+	do {
+		/* Find the closest simplex edge */
+		auto min = ::std::make_tuple(INFINITY, polytope.begin(),
+		                             Util::Vector());
+		auto I = polytope.begin();
+		for (;;) {
+			auto B = I++;
+			if (I == polytope.end())
+				I = polytope.begin();
+			float dist = distance_line_point(::std::make_pair(*B, *I));
+			if (dist < ::std::get<0>(min))
+				min = ::std::make_tuple(dist, B, *I - *B);
+			if (I == polytope.begin())
+				break;
+		}
+		Util::Vector edge;
+		float distance;
+		::std::tie(distance, I, edge) = min;
+		/* Direction perpendicular to the edge and away from O */
+		Util::Vector dir = cross(cross(-(*I), edge), edge);
+		Util::Vector point = minkDiffSupport(_shapeA, _shapeB, dir);
+		polytope.insert(I, point);
+		return_penetration_vector = point;
+		return_penetration_depth = point.length();
+		if (distance - return_penetration_depth < 0.0001)
+			break;
+	} while (true);
 
 	return true;
 }
