@@ -51,6 +51,7 @@ float SteerLib::GJK_EPA::findClosestEdgeDistance(std::vector<Util::Vector> s, Ut
 	float closest = INFINITY;
 	for (int i=0; i<s.size(); i++)
 	{
+		//std::cout<<"Simplex["<<i<<"] = "<<s[i]<<std::endl;
 		//get the next point. If reached the end of the vector get the first point
 		int j = i+1 == s.size() ? 0 : i+1;
 		Util::Vector a = s[i];
@@ -62,8 +63,7 @@ float SteerLib::GJK_EPA::findClosestEdgeDistance(std::vector<Util::Vector> s, Ut
 		Util::Vector n = originA*(e*e) - e*(originA*e);
 
 		Util::Vector nNorm = n/n.norm();
-		// e origin e
-		// origin(e·e)-e(origin·e)
+
 		float distance = a*(nNorm);
 		if(distance<closest)
 		{
