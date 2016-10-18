@@ -111,8 +111,8 @@ namespace Util {
 		static void drawCylinder(const Point & pos, float radius, float ymin, float ymax, Color color);
 		// static void drawCylinderWireFrame(const Point & pos, float radius, float ymin, float ymax);
 		// static void drawSphere(const Point & center, float radius);
-		static void drawCube();
-		static void drawSphere();
+		static void drawCube(const Point & pos, const Vector & dir, float radius, const Color& color = Color(0.9f, 0.4f, 0.1f));
+		static void drawSphere(const Point & pos, const Vector & dir, float radius, const Color& color);
 		//@}
 
 		/// @name Composite shapes drawing functionality
@@ -163,7 +163,7 @@ namespace Util {
 		static int _cubeDisplayList;
 		static int _sphereDisplayList;
 		static int _cylinderDisplayList;
-
+		static int _DickDisplayList;
 		// quadrics for shape drawings
 		static GLUquadricObj* _quadric;
 
