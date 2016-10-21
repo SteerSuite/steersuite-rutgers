@@ -30,13 +30,21 @@ bool SteerLib::GJK_EPA::intersect(float& return_penetration_depth, Util::Vector&
 
 }
 //Used to find the farthest point in a shape along a given direction. This is needed to find the Minkowski Difference.
+<<<<<<< HEAD
 Util::Vector SteerLib::GJK_EPA::getFarthestPoint(const std::vector<Util::Vector>& shape, const Util::Vector& direction)
+=======
+Util::Vector getFarthestPoint(const std::vector<Util::Vector>& shape, const Util::Vector& direction)
+>>>>>>> origin/master
 {
 
 
 	float farthestDistance = 0;
 	int index = 0;
+<<<<<<< HEAD
 	int i = 1;
+=======
+	int i = 0;
+>>>>>>> origin/master
 
 	do
 	{
@@ -57,7 +65,11 @@ Util::Vector SteerLib::GJK_EPA::getFarthestPoint(const std::vector<Util::Vector>
 }
 
 //Solves for the Minkowski Difference.
+<<<<<<< HEAD
 Util::Vector SteerLib::GJK_EPA::support(const std::vector<Util::Vector>& shapeA, const std::vector<Util::Vector>& shapeB, const Util::Vector& direction)
+=======
+Util::Vector support(const std::vector<Util::Vector>& shapeA, const std::vector<Util::Vector>& shapeB, const Util::Vector& direction)
+>>>>>>> origin/master
 {
 	Util::Vector opposite = (-1) * direction;
 	Util::Vector MinDiff = getFarthestPoint(shapeA, direction) -  getFarthestPoint(shapeB, opposite);
@@ -66,7 +78,11 @@ Util::Vector SteerLib::GJK_EPA::support(const std::vector<Util::Vector>& shapeA,
 
 bool SteerLib::GJK_EPA::GJK(const std::vector<Util::Vector>& _shapeA, const std::vector<Util::Vector>& _shapeB, std::vector<Util::Vector>& simplex)
 {
+<<<<<<< HEAD
 	Util::Vector dir(1, 0, 1);
+=======
+	Util::Vector dir(0, 0, 1);
+>>>>>>> origin/master
 	Util::Vector newdir = (-1) * dir;
 	Util::Vector i = support(_shapeA, _shapeB, dir);
 	
@@ -97,6 +113,7 @@ bool SteerLib::GJK_EPA::GJK(const std::vector<Util::Vector>& _shapeA, const std:
 bool SteerLib::GJK_EPA::originInside(Util::Vector& d, std::vector<Util::Vector>& simplex)
 {
 	//Watch video, need to find if the shape has the origin contained inside of it, based on the size of the simplex.
+<<<<<<< HEAD
 	Util::Vector a = simplex.back();
 	Util::Vector b;
 	Util::Vector c;
@@ -105,6 +122,16 @@ bool SteerLib::GJK_EPA::originInside(Util::Vector& d, std::vector<Util::Vector>&
 	Util::Vector abNorm; // normal vector to ab
 	Util::Vector acNorm; // normal vector to ac
 	Util::Vector a_neg = -1 * a;
+=======
+	Vector a = simplex.back();
+	Vector b;
+	Vector c;
+	Vector ab;
+	Vector ac;
+	Vector abNorm; // normal vector to ab
+	Vector acNorm; // normal vector to ac
+	Vector a_neg = -1 * a;
+>>>>>>> origin/master
 
 	if (simplex.size() == 3) {
 		//triangle case
@@ -119,17 +146,29 @@ bool SteerLib::GJK_EPA::originInside(Util::Vector& d, std::vector<Util::Vector>&
 		abNorm = tripleProd(ac, ab, ab);
 		acNorm = tripleProd(ab, ac, ac);
 		//
+<<<<<<< HEAD
 		if (dot(abNorm,a_neg) > 0) {
 			//erase the c vector
 			simplex.erase(simplex.begin()+0);
+=======
+		if (abNorm.dot(a_neg) > 0) {
+			//erase the c vector
+			simplex.erase(c);
+>>>>>>> origin/master
 
 			d = abNorm;
 		}
 		else {
 			//
+<<<<<<< HEAD
 			if (dot(acNorm,a_neg) > 0) {
 				//erase the b vector
 				simplex.erase(simplex.begin()+1);
+=======
+			if (acNorm.dot(a_neg) > 0) {
+				//erase the b vector
+				simplex.erase(b);
+>>>>>>> origin/master
 				d = acNorm;
 			}
 			else {
@@ -141,7 +180,11 @@ bool SteerLib::GJK_EPA::originInside(Util::Vector& d, std::vector<Util::Vector>&
 
 	else {
 
+<<<<<<< HEAD
 		b = simplex[0];;
+=======
+		b = simplex.getB();
+>>>>>>> origin/master
 		//calculate AB
 		ab = b - a;
 		// normal vector  to ab in the direction pointing toward the origin
@@ -155,6 +198,7 @@ bool SteerLib::GJK_EPA::originInside(Util::Vector& d, std::vector<Util::Vector>&
 } 
 
 //called by epa 
+<<<<<<< HEAD
 float SteerLib::GJK_EPA::closestEdge(std::vector<Util::Vector> s, Util::Vector& closestEdge, int& closestEdgeIndex)
 {
 	float closest = 100000;
@@ -173,6 +217,38 @@ float SteerLib::GJK_EPA::closestEdge(std::vector<Util::Vector> s, Util::Vector& 
 		float distance = edgeNormalTowardOrigin * a;
 		
 		if (distance < closest)
+=======
+float SteerLib::GJK_EPA:closestEdge(std::vector<Util::Vector> s, Util::Vector& closestEdge, int& closestEdgeIndex)
+{
+	float closest = 100000;
+
+	for (int i = 0; i < s.size(); i++ )
+	{
+		int j; 
+
+		Util::Vector a = s.at(i);
+		Util::Vector b = s.at(i);
+
+		if (i + 1 == s.size()) 
+		{
+			Util::Vector a = s.at(i);
+			Util::Vector b = s.at(0);
+		}else{
+			Util::Vector a = s.at(i);
+			Util::Vector b = s.at(i + 1);
+		}
+
+		Util::Vector edge;
+		std::set_difference(a.front, a.back, b.front, b.back, std::back_inserter(edge));
+
+		Util::Vector edgeNormalTowardOrigin = tripleProduct(edge, a, edge); 
+		normalize(edgeNormalTowardOrigin);
+
+		int init = 100;
+		double distance = std::inner_product(edgeNormalTowardOrigin.front, edgeNormalTowardOrigin.back, a.front, init);
+		
+		if (distance < closestEdgeDistance)
+>>>>>>> origin/master
 		{
 			closest = distance;
 			closestEdge = edgeNormalTowardOrigin;
@@ -187,6 +263,7 @@ float SteerLib::GJK_EPA::closestEdge(std::vector<Util::Vector> s, Util::Vector& 
 
 
 //is there a collision, return penitration vector, depth 
+<<<<<<< HEAD
 float SteerLib::GJK_EPA::EPA(const std::vector<Util::Vector>& _shapeA, const std::vector<Util::Vector>& _shapeB, const std::vector<Util::Vector>& simplex, Util::Vector& penetration_vector)
 {
 	std::vector<Util::Vector> s = simplex;
@@ -218,6 +295,33 @@ float SteerLib::GJK_EPA::EPA(const std::vector<Util::Vector>& _shapeA, const std
 
 
 Util::Vector SteerLib::GJK_EPA::tripleProd(Util::Vector& a, Util::Vector& b, Util::Vector& c)
+=======
+float SteerLib::GJK_EPA::EPA(const std::vector<Util::Vector>& _shapeA, const std::vector<Util::Vector>& _shapeB, const std::vector<Util::Vector>& simplex, Util::Vector& penetration_vector, float& depth)
+{
+	Until::Vector closestEdge; 
+	int closestEdgeIndex; 
+
+	while (true)
+	{
+		float edgeDistance = edgeDistance(simplex, closestEdge, closestEdgeIndex);
+		Util::Vector support = support(_shapeA, _shapeB, noralize(edge));
+		double distance = std::inner_product(support, support., normalize(closestEdge));
+
+		if (distance - edgeDistance < 0.00001)
+		{
+			penetration_vector = normalize(closestEdge);
+			depth = distance;
+		}
+		else() {
+			simplex.insert(support, closestEdgeIndex);
+		}
+	}
+
+
+	}
+
+Util::Vector tripleProd(Util::Vector& a, Util::Vector& b, Util::Vector& c)
+>>>>>>> origin/master
 {
 	return b*dot(a, c) - c*dot(a, b);
 }

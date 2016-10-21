@@ -44,11 +44,35 @@ void Curve::addControlPoints(const std::vector<CurvePoint>& inputPoints)
 void Curve::drawCurve(Color curveColor, float curveThickness, int window)
 {
 #ifdef ENABLE_GUI
+<<<<<<< HEAD
+<<<<<<< HEAD
+	Points firstpoint = controlPoints[0].position;
+=======
+	Point firstpoint = controlPoints[0];
+>>>>>>> origin/master
+=======
 	
 			
 	if (checkRobust())
+>>>>>>> origin/master
 
 	{
+<<<<<<< HEAD
+		for (int i = 0; i <= controlPoints.size() - 1; i = i + window)
+		{
+			Point startPosition = controlPoints[i].position;
+			Point lastPostion = controlPoints[i + 1].position; 
+			float startTime = controlPoints[i].time;
+			float endTime = controlPoints[i + 1].time;
+
+			if (type == hermiteCurve) {
+				1astpoint = useHermiteCurve(i*window, controlpoints[i].time); 
+				Drawlib::drawLine(controlPoints[i], controlPoints[i + 1], curvecolor, curveThickness);
+			}
+			if (type == catMullCurve) {
+				1astpoint = useHermiteCurve(i*window, controlpoints[i].time);
+				Drawlib::drawLine(controlPoints[i], controlPoints[i + 1], curvecolor, curveThickness);
+=======
 		Point endPosition;
 		for (int i = 1; i < controlPoints.size(); i++)
 		{
@@ -69,6 +93,7 @@ void Curve::drawCurve(Color curveColor, float curveThickness, int window)
 
 				DrawLib::drawLine(startPosition, endPosition, curveColor, curveThickness);
 				startPosition = endPosition;
+>>>>>>> origin/master
 			}
 		}
 	}
