@@ -469,7 +469,7 @@ project "pprAI"
 		
 	buildoptions("-std=c++0x -ggdb" )
 
-	project "collisionAI"
+project "collisionAI"
 	language "C++"
 	kind "SharedLib"
 	includedirs { 
@@ -481,6 +481,24 @@ project "pprAI"
 	files { 
 		"../collisionAI/include/*.h",
 		"../collisionAI/src/*.cpp"
+	}
+	links { 
+		"steerlib",
+		"util"
+	}
+	
+project "searchAI"
+	language "C++"
+	kind "SharedLib"
+	includedirs { 
+		"../steerlib/include",
+		"../searchAI/include",
+		"../external",
+		"../util/include",
+	}
+	files { 
+		"../searchAI/include/*.h",
+		"../searchAI/src/*.cpp"
 	}
 	links { 
 		"steerlib",
