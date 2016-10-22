@@ -174,7 +174,10 @@ void SocialForcesAgent::reset(const SteerLib::AgentInitialConditions & initialCo
 		else if (initialConditions.goals[i].goalType == GOAL_TYPE_SEEK_DYNAMIC_TARGET)
 			SeekTarget.insert(initialConditions.goals[i].targetName);
 		else if (initialConditions.goals[i].goalType == GOAL_TYPE_FLEE_DYNAMIC_TARGET)
+		{
 			FleeTarget.insert(initialConditions.goals[i].targetName);
+			std::cout << initialConditions.goals[i].targetName;
+		}
 
 		else {
 			throw Util::GenericException("Unsupported goal type; SocialForcesAgent only supports GOAL_TYPE_SEEK_STATIC_TARGET and GOAL_TYPE_AXIS_ALIGNED_BOX_GOAL.");
@@ -1005,7 +1008,7 @@ void SocialForcesAgent::updateAI(float timeStamp, float dt, unsigned int frameNu
 
 	//SocialForcesAgent::pursueAndEvade_acceleration(dt, _acceleration_1);
 	//SocialForcesAgent::Wallfollower(dt, _acceleration_1);
-	SocialForcesAgent::Queueing(_acceleration_1);
+	//SocialForcesAgent::Queueing(_acceleration_1);
 	_acceleration = ((prefForce + repulsionForce + proximityForce) / MASS * AGENT_ACCELERATION_PERCENTAGE) + (_acceleration_1 *INDIV_BEHAVIOUR_PERCENTAGE);
 
 	_velocity = velocity() + _acceleration;
