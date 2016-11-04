@@ -36,10 +36,10 @@ using namespace Util;
 //
 // callback wrappers for GLFW
 //
-static void GLFWCALL processWindowResizedEvent(int width, int height) { GLFWEngineDriver::getInstance()->processWindowResizedEvent(width,height); }
+static void GLFWCALL processWindowResizedEvent(int width, int height) { GLFWEngineDriver::getInstance()->processWindowResizedEvent(width, height); }
 static void GLFWCALL processKeyPressEvent(int key, int action) { GLFWEngineDriver::getInstance()->processKeyPressEvent(key, action); }
 static void GLFWCALL processMouseButtonEvent(int button, int action) { GLFWEngineDriver::getInstance()->processMouseButtonEvent(button, action); }
-static void GLFWCALL processMouseMovementEvent(int x, int y) { GLFWEngineDriver::getInstance()->processMouseMovementEvent(x,y); }
+static void GLFWCALL processMouseMovementEvent(int x, int y) { GLFWEngineDriver::getInstance()->processMouseMovementEvent(x, y); }
 static void GLFWCALL processMouseWheelEvent(int pos) { GLFWEngineDriver::getInstance()->processMouseWheelEvent(pos); }
 static int GLFWCALL processWindowCloseEvent() { return GLFWEngineDriver::getInstance()->processWindowCloseEvent(); }
 
@@ -82,6 +82,11 @@ GLFWEngineDriver::GLFWEngineDriver()
 	_canUseMouseWheelZoom = true;
 
 	_options = NULL;
+
+	_beforePinchX = 0.0;
+	_beforePinchZ = 0.0;
+	_pinchingObstacle = false;
+	_pinchedObstacle = NULL;
 }
 
 
@@ -141,7 +146,7 @@ void GLFWEngineDriver::finish()
 //
 const char * GLFWEngineDriver::getData()
 {
-	char * out = (char *) malloc(sizeof(char)*20);
+	char * out = (char *)malloc(sizeof(char) * 20);
 	strncpy(out, "EXIT_SUCCESS_GLFW", 20);
 	return out;
 }
@@ -152,10 +157,10 @@ LogData * GLFWEngineDriver::getLogData()
 	LogData * lD = moduleInterface->getLogData();
 	ModuleInterface * aimoduleInterface = (_engine->getModule("rvo2dAI")); //TODO
 
-	// TODO use this properly instead.
-	std::vector<SteerLib::ModuleInterface*> modules = _engine-> getAllModules();
+																		   // TODO use this properly instead.
+	std::vector<SteerLib::ModuleInterface*> modules = _engine->getAllModules();
 
-	if ( (aimoduleInterface != NULL) )
+	if ((aimoduleInterface != NULL))
 	{
 		lD->appendLogData(aimoduleInterface->getLogData());
 	}
@@ -188,30 +193,30 @@ void GLFWEngineDriver::_initGLFW()
 			_options->glfwEngineDriverOptions.stereoMode = "off";
 		}
 	}
-	
+
 	// set the appropriate windowing mode
 	int mode = (_options->glfwEngineDriverOptions.fullscreen ? GLFW_FULLSCREEN : GLFW_WINDOW);
 
 	// create the glfw window
-	if (glfwOpenWindow( _options->glfwEngineDriverOptions.windowSizeX, _options->glfwEngineDriverOptions.windowSizeY, 8, 8, 8, 8, 24, 8, mode) == GL_FALSE)
+	if (glfwOpenWindow(_options->glfwEngineDriverOptions.windowSizeX, _options->glfwEngineDriverOptions.windowSizeY, 8, 8, 8, 8, 24, 8, mode) == GL_FALSE)
 	{
 		throw GenericException("Could not open a window using glfwOpenWindow().");
 	}
 
 	// specify some configuration that needs to happen after creating the window
-	glfwSetWindowTitle( _options->glfwEngineDriverOptions.windowTitle.c_str() );
-	glfwSetWindowPos( _options->glfwEngineDriverOptions.windowPositionX, _options->glfwEngineDriverOptions.windowPositionY);
+	glfwSetWindowTitle(_options->glfwEngineDriverOptions.windowTitle.c_str());
+	glfwSetWindowPos(_options->glfwEngineDriverOptions.windowPositionX, _options->glfwEngineDriverOptions.windowPositionY);
 	int interval = _options->guiOptions.useVsync ? 1 : 0;
 	glfwSwapInterval(interval);
 
 	// register GLFW callbacks
 	// note the "::" is needed to resolve the static global functions, not the GLFWEngineDriver member functions.
-	glfwSetWindowSizeCallback( ::processWindowResizedEvent );
-	glfwSetKeyCallback( ::processKeyPressEvent );
-	glfwSetMouseButtonCallback( ::processMouseButtonEvent );
-	glfwSetMousePosCallback( ::processMouseMovementEvent );
-	glfwSetMouseWheelCallback( ::processMouseWheelEvent );
-	glfwSetWindowCloseCallback( ::processWindowCloseEvent );
+	glfwSetWindowSizeCallback(::processWindowResizedEvent);
+	glfwSetKeyCallback(::processKeyPressEvent);
+	glfwSetMouseButtonCallback(::processMouseButtonEvent);
+	glfwSetMousePosCallback(::processMouseMovementEvent);
+	glfwSetMouseWheelCallback(::processMouseWheelEvent);
+	glfwSetWindowCloseCallback(::processWindowCloseEvent);
 
 }
 
@@ -239,14 +244,15 @@ void GLFWEngineDriver::_initGL()
 	_engine->initGL();
 
 	if (_multisampleAntialiasingSupported && _useAntialiasing) {
-		glEnable( MULTISAMPLE_ARB );
-	} else {
-		glDisable( MULTISAMPLE_ARB );
+		glEnable(MULTISAMPLE_ARB);
+	}
+	else {
+		glDisable(MULTISAMPLE_ARB);
 	}
 
-	int w,h;
-	glfwGetWindowSize( &w, &h );
-	processWindowResizedEvent(w,h);
+	int w, h;
+	glfwGetWindowSize(&w, &h);
+	processWindowResizedEvent(w, h);
 }
 
 
@@ -332,35 +338,35 @@ void GLFWEngineDriver::_drawScene()
 		const float far_ = 4000;
 		const float fov = cam.fovy();
 
-		float ratio	= _options->glfwEngineDriverOptions.windowSizeX / (double)_options->glfwEngineDriverOptions.windowSizeY;
-		float hh	= near_ * tanf(0.0174532925199432957692369076849f * fov / 2); // half height; constant is pi / 180
-		float ndfl	= near_ / focallength;
+		float ratio = _options->glfwEngineDriverOptions.windowSizeX / (double)_options->glfwEngineDriverOptions.windowSizeY;
+		float hh = near_ * tanf(0.0174532925199432957692369076849f * fov / 2); // half height; constant is pi / 180
+		float ndfl = near_ / focallength;
 
 		// setup the left view
 		if (_options->glfwEngineDriverOptions.stereoMode == "side-by-side")
-			glViewport(0, 0, _options->glfwEngineDriverOptions.windowSizeX/2, _options->glfwEngineDriverOptions.windowSizeY);
+			glViewport(0, 0, _options->glfwEngineDriverOptions.windowSizeX / 2, _options->glfwEngineDriverOptions.windowSizeY);
 		else if (_options->glfwEngineDriverOptions.stereoMode == "top-and-bottom")
-			glViewport(0, 0, _options->glfwEngineDriverOptions.windowSizeX, _options->glfwEngineDriverOptions.windowSizeY/2);
+			glViewport(0, 0, _options->glfwEngineDriverOptions.windowSizeX, _options->glfwEngineDriverOptions.windowSizeY / 2);
 		else if (_options->glfwEngineDriverOptions.stereoMode == "quadbuffer")
 			glViewport(0, 0, _options->glfwEngineDriverOptions.windowSizeX, _options->glfwEngineDriverOptions.windowSizeY);
 
 		/*if (_options->glfwEngineDriverOptions.stereoMode == "quadbuffer")
 		{
-			// clear left and right buffers
-			glDrawBuffer(GL_BACK_LEFT);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		// clear left and right buffers
+		glDrawBuffer(GL_BACK_LEFT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-			glDrawBuffer(GL_BACK_RIGHT);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glDrawBuffer(GL_BACK_RIGHT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		}*/
 
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		float left	= -ratio * hh - 0.5 * eyeSep * ndfl;
-		float right	=  ratio * hh - 0.5 * eyeSep * ndfl;
-		float top	=  hh;
-		float bottom= -hh;
-		glFrustum(left,right,bottom,top,near_,far_);
+		float left = -ratio * hh - 0.5 * eyeSep * ndfl;
+		float right = ratio * hh - 0.5 * eyeSep * ndfl;
+		float top = hh;
+		float bottom = -hh;
+		glFrustum(left, right, bottom, top, near_, far_);
 
 		if (_options->glfwEngineDriverOptions.stereoMode == "quadbuffer")
 			glDrawBuffer(GL_BACK_LEFT);
@@ -370,17 +376,17 @@ void GLFWEngineDriver::_drawScene()
 		_engine->draw();
 
 		if (_options->glfwEngineDriverOptions.stereoMode == "side-by-side")
-			glViewport(_options->glfwEngineDriverOptions.windowSizeX/2, 0, _options->glfwEngineDriverOptions.windowSizeX/2, _options->glfwEngineDriverOptions.windowSizeY);
+			glViewport(_options->glfwEngineDriverOptions.windowSizeX / 2, 0, _options->glfwEngineDriverOptions.windowSizeX / 2, _options->glfwEngineDriverOptions.windowSizeY);
 		else if (_options->glfwEngineDriverOptions.stereoMode == "top-and-bottom")
-			glViewport(0, _options->glfwEngineDriverOptions.windowSizeY/2, _options->glfwEngineDriverOptions.windowSizeX, _options->glfwEngineDriverOptions.windowSizeY/2);
+			glViewport(0, _options->glfwEngineDriverOptions.windowSizeY / 2, _options->glfwEngineDriverOptions.windowSizeX, _options->glfwEngineDriverOptions.windowSizeY / 2);
 
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		left	= -ratio * hh + 0.5 * eyeSep * ndfl;
-		right	=  ratio * hh + 0.5 * eyeSep * ndfl;
-		top		=  hh;
-		bottom	= -hh;
-		glFrustum(left,right,bottom,top,near_,far_);
+		left = -ratio * hh + 0.5 * eyeSep * ndfl;
+		right = ratio * hh + 0.5 * eyeSep * ndfl;
+		top = hh;
+		bottom = -hh;
+		glFrustum(left, right, bottom, top, near_, far_);
 
 		if (_options->glfwEngineDriverOptions.stereoMode == "quadbuffer")
 			glDrawBuffer(GL_BACK_RIGHT);
@@ -423,7 +429,7 @@ void GLFWEngineDriver::writeScreenCapture()
 	// _frameSaver->baseName = "frame";
 
 	_frameSaver->DumpPPM(_options->glfwEngineDriverOptions.windowSizeX,
-			_options->glfwEngineDriverOptions.windowSizeY);
+		_options->glfwEngineDriverOptions.windowSizeY);
 
 }
 
@@ -434,19 +440,19 @@ void GLFWEngineDriver::dumpTestCase()
 	std::vector<SteerLib::ObstacleInterface*> _obstacles;
 	int j;
 
-	for (j=0; j < _engine->getAgents().size(); j++)
+	for (j = 0; j < _engine->getAgents().size(); j++)
 	{
 		_agents.push_back(AgentInterface::getAgentConditions(_engine->getAgents().at(j)));
 	}
 
-	for(set<SteerLib::ObstacleInterface*>::const_iterator iter = _engine->getObstacles().begin(); iter != _engine->getObstacles().end(); iter++)
+	for (set<SteerLib::ObstacleInterface*>::const_iterator iter = _engine->getObstacles().begin(); iter != _engine->getObstacles().end(); iter++)
 	{
-		_obstacles.push_back( (*iter) );
+		_obstacles.push_back((*iter));
 	}
 
 	SteerLib::TestCaseWriter testCaseWriter;
 	//TODO should update filename to change or be user inputed.
-	testCaseWriter.writeTestCaseToFile("test",_agents,_obstacles,_engine);
+	testCaseWriter.writeTestCaseToFile("test", _agents, _obstacles, _engine);
 }
 
 
@@ -478,7 +484,7 @@ void GLFWEngineDriver::_findClosestAgentToMouse()
 	gluUnProject(x, y, 1, modelView, projection, viewport, &x2, &y2, &z2);
 
 	// Our ray: originates at the camara and goes somewhere
-	Vector cameraRay = Vector((float)(x2-x1), (float)(y2-y1), (float)(z2-z1));
+	Vector cameraRay = Vector((float)(x2 - x1), (float)(y2 - y1), (float)(z2 - z1));
 	Point cameraPos = _engine->getCamera().position();
 
 	// to determine which agents are closest to the mouse click, figure out which
@@ -495,11 +501,11 @@ void GLFWEngineDriver::_findClosestAgentToMouse()
 	float distanceToNearest = FLT_MAX;
 
 	const std::vector<AgentInterface*> & agents = _engine->getAgents();
-	for(std::vector<AgentInterface*>::const_iterator i = agents.begin(); i != agents.end(); ++i)
+	for (std::vector<AgentInterface*>::const_iterator i = agents.begin(); i != agents.end(); ++i)
 	{
 		float dist = distanceBetween((*i)->position(), locationOfMouseOnYPlane);
 		// if its the closest one, but also within some distance threshold
-		if ((dist < (*i)->radius()+0.5f) && (dist < distanceToNearest)) {
+		if ((dist < (*i)->radius() + 0.5f) && (dist < distanceToNearest)) {
 			nearest = (*i);
 			distanceToNearest = dist;
 		}
@@ -522,86 +528,87 @@ void GLFWEngineDriver::processWindowResizedEvent(int width, int height)
 
 void GLFWEngineDriver::processKeyPressEvent(int key, int action)
 {
-	if ((key == _options->keyboardBindings.quit) && (action==GLFW_PRESS)) {
+	if ((key == _options->keyboardBindings.quit) && (action == GLFW_PRESS)) {
 		_done = true;
 	}
-	else if ((key == _options->keyboardBindings.toggleAntialiasing) && (action==GLFW_PRESS)) {
+	else if ((key == _options->keyboardBindings.toggleAntialiasing) && (action == GLFW_PRESS)) {
 		if (!_multisampleAntialiasingSupported) {
 			cerr << "WARNING: toggling antialiasing may have no effect; antialiasing does not seem to be supported.\n";
 		}
 		_useAntialiasing = !_useAntialiasing;
 		if (_useAntialiasing) {
-			glEnable( MULTISAMPLE_ARB );
-		} else {
-			glDisable( MULTISAMPLE_ARB );
+			glEnable(MULTISAMPLE_ARB);
+		}
+		else {
+			glDisable(MULTISAMPLE_ARB);
 		}
 		std::cout << "Antialiasing turned " << (_useAntialiasing ? "on" : "off") << std::endl;
 	}
-	else if ((key == _options->keyboardBindings.printCameraInfo) && (action==GLFW_PRESS)) {
+	else if ((key == _options->keyboardBindings.printCameraInfo) && (action == GLFW_PRESS)) {
 		cout << "CAMERA INFO:" << endl;
 		cout << "  Position:     " << _engine->getCamera().position() << endl;
 		cout << "  LookAt:       " << _engine->getCamera().lookat() << endl;
 		cout << "  Up:           " << _engine->getCamera().up() << endl;
-	} 
-	else if ((key == _options->keyboardBindings.stepForward) && (action==GLFW_PRESS)) {
+	}
+	else if ((key == _options->keyboardBindings.stepForward) && (action == GLFW_PRESS)) {
 		pauseAndStepOneFrame();
 	}
-	else if ((key == _options->keyboardBindings.pause) && (action==GLFW_PRESS)) {
+	else if ((key == _options->keyboardBindings.pause) && (action == GLFW_PRESS)) {
 		togglePausedState();
 	}
-	else if ((key == (int)'F') && (action==GLFW_PRESS)) {
+	else if ((key == (int)'F') && (action == GLFW_PRESS)) {
 		cout << "Frame Number " << _engine->getClock().getCurrentFrameNumber() << "\n";
 	}
-	else if ((key == _options->keyboardBindings.takeScreenshot) && (action==GLFW_PRESS))
+	else if ((key == _options->keyboardBindings.takeScreenshot) && (action == GLFW_PRESS))
 	{
 		writeScreenCapture();
 	}
-	else if ((key == _options->keyboardBindings.dumpTestCase) && (action==GLFW_PRESS))
+	else if ((key == _options->keyboardBindings.dumpTestCase) && (action == GLFW_PRESS))
 	{
 		std::cout << "Dumping testcase of current simulation" << std::endl;
 		dumpTestCase();
 	}
-	else if ((key == _options->keyboardBindings.startDumpingFrames) && (action==GLFW_PRESS))
+	else if ((key == _options->keyboardBindings.startDumpingFrames) && (action == GLFW_PRESS))
 	{
 		// home button
 		std::cout << "Saving frames" << std::endl;
 		_dumpFrames = true;
 	}
-	else if ((key == _options->keyboardBindings.stopDumpingFrames) && (action==GLFW_PRESS))
+	else if ((key == _options->keyboardBindings.stopDumpingFrames) && (action == GLFW_PRESS))
 	{
 		// end button
 		std::cout << "Ending frame saving" << std::endl;
 		_dumpFrames = false;
 	}
 	else {
-		if (_engine) _engine->processKeyboardInput( key, action);
+		if (_engine) _engine->processKeyboardInput(key, action);
 	}
 }
 
 
 void GLFWEngineDriver::processMouseButtonEvent(int button, int action)
 {
-	bool controlKeyPressed = (  (glfwGetKey(GLFW_KEY_LCTRL)==GLFW_PRESS) || (glfwGetKey(GLFW_KEY_RCTRL)==GLFW_PRESS) );
+	bool controlKeyPressed = ((glfwGetKey(GLFW_KEY_LCTRL) == GLFW_PRESS) || (glfwGetKey(GLFW_KEY_RCTRL) == GLFW_PRESS));
 
-	if ((button ==  _options->mouseBindings.selectAgent) && (action == GLFW_PRESS)) {
-		if(!controlKeyPressed) {
+	if ((button == _options->mouseBindings.selectAgent) && (action == GLFW_PRESS)) {
+		if (!controlKeyPressed) {
 			if (_agentNearestToMouse != NULL) {
 				if (!_engine->isAgentSelected(_agentNearestToMouse)) {
 					_engine->selectAgent(_agentNearestToMouse);
 					unsigned int i;
-					for (i=0; i< _engine->getAgents().size(); i++) {
-						if ( _engine->getAgents()[i] == _agentNearestToMouse ) {
+					for (i = 0; i< _engine->getAgents().size(); i++) {
+						if (_engine->getAgents()[i] == _agentNearestToMouse) {
 							break;
 						}
 					}
 					if (_agentNearestToMouse != NULL) cerr << "selected agent #" << i << " at location " << _agentNearestToMouse->position() <<
-							" agent mem loc " << _agentNearestToMouse << " total " << _engine->getSelectedAgents().size() << " agents are currently selected)." << endl;
+						" agent mem loc " << _agentNearestToMouse << " total " << _engine->getSelectedAgents().size() << " agents are currently selected)." << endl;
 				}
 				else {
 					_engine->unselectAgent(_agentNearestToMouse);
 					unsigned int i;
-					for (i=0; i< _engine->getAgents().size(); i++) {
-						if ( _engine->getAgents()[i] == _agentNearestToMouse ) {
+					for (i = 0; i< _engine->getAgents().size(); i++) {
+						if (_engine->getAgents()[i] == _agentNearestToMouse) {
 							break;
 						}
 					}
@@ -623,7 +630,7 @@ void GLFWEngineDriver::processMouseButtonEvent(int button, int action)
 	}
 
 	if ((button == _options->mouseBindings.rotateCamera) && (action == GLFW_PRESS)) {
-		if(controlKeyPressed) _rotateCameraOnMouseMotion = true;
+		if (controlKeyPressed) _rotateCameraOnMouseMotion = true;
 	}
 
 	if ((button == _options->mouseBindings.rotateCamera) && (action == GLFW_RELEASE)) {
@@ -631,11 +638,112 @@ void GLFWEngineDriver::processMouseButtonEvent(int button, int action)
 	}
 
 	if ((button == _options->mouseBindings.zoomCamera) && (action == GLFW_PRESS)) {
-		if(controlKeyPressed) _zoomCameraOnMouseMotion = true;
+		if (controlKeyPressed) _zoomCameraOnMouseMotion = true;
 	}
 
 	if ((button == _options->mouseBindings.zoomCamera) && (action == GLFW_RELEASE)) {
 		_zoomCameraOnMouseMotion = false;
+	}
+
+	//obstacle selecting
+	if ((button == GLFW_MOUSE_BUTTON_LEFT) && (action == GLFW_PRESS))
+	{
+		if (!controlKeyPressed)
+		{
+			//get position of cursor in world coordinate
+			double modelView[16];
+			double projection[16];
+			int viewport[4];
+
+			double x1, y1, z1, x2, y2, z2;
+
+			glGetDoublev(GL_MODELVIEW_MATRIX, modelView);
+			glGetDoublev(GL_PROJECTION_MATRIX, projection);
+			glGetIntegerv(GL_VIEWPORT, viewport);
+
+			int x = _mouseX;
+			int y = viewport[3] - _mouseY;
+			gluUnProject(x, y, 0, modelView, projection, viewport, &x1, &y1, &z1);
+			gluUnProject(x, y, 1, modelView, projection, viewport, &x2, &y2, &z2);
+
+			Vector cameraRay = Vector((float)(x2 - x1), (float)(y2 - y1), (float)(z2 - z1));
+			Point cameraPos = _engine->getCamera().position();
+
+			float t = -cameraPos.y / cameraRay.y;
+			Point locationOfMouseOnYPlane = cameraPos + t*cameraRay;
+
+			//check whether picked an obstacle
+			for (set<SteerLib::ObstacleInterface*>::const_iterator iter = _engine->getObstacles().begin(); iter != _engine->getObstacles().end(); iter++)
+			{
+				//float temp_t;
+				//Ray tempRay;
+				//tempRay.initWithLengthInterval(cameraPos, cameraRay);
+
+				//if ((*iter)->intersects(tempRay, temp_t))
+				if (((*iter)->getBounds().xmin <= locationOfMouseOnYPlane.x)
+					&& ((*iter)->getBounds().xmax >= locationOfMouseOnYPlane.x)
+					&& ((*iter)->getBounds().zmin <= locationOfMouseOnYPlane.z)
+					&& ((*iter)->getBounds().zmax >= locationOfMouseOnYPlane.z))
+				{
+					_beforePinchX = locationOfMouseOnYPlane.x;
+					_beforePinchZ = locationOfMouseOnYPlane.z;
+
+					_pinchedObstacle = (*iter);
+					_pinchingObstacle = true;
+				}
+			}
+		}
+	}
+
+	//put obstacle down
+	if ((button == GLFW_MOUSE_BUTTON_LEFT) && (action == GLFW_RELEASE))
+	{
+		if (_pinchingObstacle && _pinchedObstacle)
+		{
+			//get position of cursor in world coordinate
+			double modelView[16];
+			double projection[16];
+			int viewport[4];
+
+			double x1, y1, z1, x2, y2, z2;
+
+			glGetDoublev(GL_MODELVIEW_MATRIX, modelView);
+			glGetDoublev(GL_PROJECTION_MATRIX, projection);
+			glGetIntegerv(GL_VIEWPORT, viewport);
+
+			int x = _mouseX;
+			int y = viewport[3] - _mouseY;
+			gluUnProject(x, y, 0, modelView, projection, viewport, &x1, &y1, &z1);
+			gluUnProject(x, y, 1, modelView, projection, viewport, &x2, &y2, &z2);
+
+			Vector cameraRay = Vector((float)(x2 - x1), (float)(y2 - y1), (float)(z2 - z1));
+			Point cameraPos = _engine->getCamera().position();
+
+			float t = -cameraPos.y / cameraRay.y;
+			Point locationOfMouseOnYPlane = cameraPos + t*cameraRay;
+
+			//locate the obstacle in current place
+			float deltaX = locationOfMouseOnYPlane.x - _beforePinchX;
+			float deltaZ = locationOfMouseOnYPlane.z - _beforePinchZ;
+
+			//can only deal with box now
+			Util::AxisAlignedBox oldBox = _pinchedObstacle->getBounds();
+			Util::AxisAlignedBox newBox = oldBox;
+			newBox.xmin += deltaX;
+			newBox.xmax += deltaX;
+			newBox.zmin += deltaZ;
+			newBox.zmax += deltaZ;
+
+			_pinchedObstacle->setBounds(newBox);
+
+			_engine->getSpatialDatabase()->updateObject(_pinchedObstacle, oldBox, newBox);
+
+			//recover
+			_pinchingObstacle = false;
+			_beforePinchX = 0.0;
+			_beforePinchZ = 0.0;
+			_pinchedObstacle = NULL;
+		}
 	}
 
 	_engine->processMouseButtonEvent(button, action);
@@ -654,7 +762,7 @@ void GLFWEngineDriver::processMouseMovementEvent(int x, int y)
 	_mouseY = y;
 
 	// camera rotate
-	if(_rotateCameraOnMouseMotion)
+	if (_rotateCameraOnMouseMotion)
 	{
 		float xAdjust = -deltaX * _options->guiOptions.mouseRotationFactor;
 		float yAdjust = deltaY * _options->guiOptions.mouseRotationFactor;
@@ -663,14 +771,14 @@ void GLFWEngineDriver::processMouseMovementEvent(int x, int y)
 	}
 
 	// camera zoom
-	if(_zoomCameraOnMouseMotion)
+	if (_zoomCameraOnMouseMotion)
 	{
 		float yAdjust = deltaY * _options->guiOptions.mouseZoomFactor;
 		_engine->getCamera().nudgeZoom(yAdjust);
 	}
 
 	// camera move
-	if(_moveCameraOnMouseMotion)
+	if (_moveCameraOnMouseMotion)
 	{
 		float xAdjust = deltaX * _options->guiOptions.mouseMovementFactor;
 		float yAdjust = deltaY * _options->guiOptions.mouseMovementFactor;
