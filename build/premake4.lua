@@ -469,6 +469,27 @@ project "pprAI"
 		
 	buildoptions("-std=c++0x -ggdb" )
 
+	project "collisionAI"
+	language "C++"
+	kind "SharedLib"
+	includedirs { 
+		"../steerlib/include",
+		"../collisionAI/include",
+		"../external",
+		"../util/include",
+	}
+	files { 
+		"../collisionAI/include/*.h",
+		"../collisionAI/src/*.cpp"
+	}
+	links { 
+		"steerlib",
+		"util"
+	}
+	
+	buildoptions("-std=c++0x -ggdb" )
+
+	
 project "curveAI"
 	language "C++"
 	kind "SharedLib"

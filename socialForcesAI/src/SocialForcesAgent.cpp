@@ -193,7 +193,7 @@ void SocialForcesAgent::reset(const SteerLib::AgentInitialConditions & initialCo
 				(
 					(
 						Util::Vector(goalDirection.x, 0.0f, goalDirection.z) *
-						PERFERED_SPEED
+						PREFERED_SPEED
 					)
 				- velocity()
 				)
@@ -417,6 +417,16 @@ Util::Vector SocialForcesAgent::calcProximityForce(float dt)
 	}
 	return away + away_obs;
 }
+
+
+
+Vector SocialForcesAgent::calcGoalForce(Vector _goalDirection, float _dt)
+{
+	Util::Vector goalForce = ((_goalDirection * PREFERED_SPEED) - velocity()) / _dt;
+
+	return goalForce / 6;
+}
+
 
 Util::Vector SocialForcesAgent::calcRepulsionForce(float dt)
 {
