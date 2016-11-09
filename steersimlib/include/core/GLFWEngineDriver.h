@@ -23,17 +23,17 @@
 #include "util/FrameSaver.h"
 
 /**
- * @brief A GUI back-end that controls a SteerLib::SimulationEngine.
- *
- * This back-end is used to visualize the contents of a simulation interactively.
- *
- * This class uses GLFW, which is more recent than the traditional GLUT.  Like GLUT, 
- * GLFW is pure C, so it can only invoke callbacks trhough static non-member wrappers.
- * Because of this, this class uses a singleton design pattern.
- *
- * @see
- *   - CommandLineEngineDriver to control a SimulationEngine without a GUI.
- */
+* @brief A GUI back-end that controls a SteerLib::SimulationEngine.
+*
+* This back-end is used to visualize the contents of a simulation interactively.
+*
+* This class uses GLFW, which is more recent than the traditional GLUT.  Like GLUT,
+* GLFW is pure C, so it can only invoke callbacks trhough static non-member wrappers.
+* Because of this, this class uses a singleton design pattern.
+*
+* @see
+*   - CommandLineEngineDriver to control a SimulationEngine without a GUI.
+*/
 class STEERLIB_API GLFWEngineDriver : public SteerLib::EngineControllerInterface
 {
 public:
@@ -107,13 +107,18 @@ protected:
 
 	Util::FrameSaver * _frameSaver;
 
+	bool _pinchingObstacle;
+	SteerLib::ObstacleInterface* _pinchedObstacle;
+	float _beforePinchX;
+	float _beforePinchZ;
+
 
 private:
 	/// @brief These functions are private, and un-implemented, to protect against mangling the instance.
 	//@{
-	GLFWEngineDriver(const GLFWEngineDriver & );  // not implemented, not copyable
-	GLFWEngineDriver& operator= (const GLFWEngineDriver & );  // not implemented, not assignable
-	//@}
+	GLFWEngineDriver(const GLFWEngineDriver &);  // not implemented, not copyable
+	GLFWEngineDriver& operator= (const GLFWEngineDriver &);  // not implemented, not assignable
+															 //@}
 };
 
 
