@@ -13,6 +13,8 @@
 #include <set>
 #include <map>
 #include "SteerLib.h"
+#include "planning/minHeap.h"
+
 
 namespace SteerLib
 {
@@ -98,6 +100,10 @@ namespace SteerLib
 			bool computePath(std::vector<Util::Point>& agent_path, Util::Point start, Util::Point goal, SteerLib::SpatialDataBaseInterface * _gSpatialDatabase, bool append_to_path = false);
 		private:
 			SteerLib::SpatialDataBaseInterface * gSpatialDatabase;
+
+			minHeap* openHeap;
+			minHeap* closedHeap;
+			minHeap* gValueHeap;
 	};
 
 
