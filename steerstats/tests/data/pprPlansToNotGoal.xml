@@ -1,0 +1,331 @@
+<!--
+  Copyright (c) 2009-2015  Glen Berseth, Mubbasir Kapadia, Shawn Singh, Petros Faloutsos, Glenn Reinman
+  See license.txt for complete license.
+--><!-- 
+ Copyright (c) 2009 Shawn Singh, Mubbasir Kapadia, Petros Faloutsos, Glenn Reinman
+ See license.txt for complete license.
+  -->
+<SteerBenchTestCase xmlns="http://www.magix.ucla.edu/steerbench"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.magix.ucla.edu/steerbench/TestCaseSchema.xsd">
+	<header>
+		<version>1.0</version>
+		<name>data/testCases/scenario92</name>
+	<worldBounds>
+		<xmin>-99.500000</xmin>
+		<xmax>-199.000000</xmax>
+		<ymin>0.000000</ymin>
+		<ymax>0.000000</ymax>
+		<zmin>-100.000000</zmin>
+		<zmax>-200.000000</zmax>
+	</worldBounds>
+</header>
+	<obstacle>
+		<xmin>-5.000000</xmin>
+		<xmax>-4.000000</xmax>
+		<ymin>0.000000</ymin>
+		<ymax>0.250000</ymax>
+		<zmin>-3.000000</zmin>
+		<zmax>-2.000000</zmax>
+	</obstacle>
+	<obstacle>
+		<xmin>-5.000000</xmin>
+		<xmax>-4.000000</xmax>
+		<ymin>0.000000</ymin>
+		<ymax>0.250000</ymax>
+		<zmin>-1.000000</zmin>
+		<zmax>0.000000</zmax>
+	</obstacle>
+	<obstacle>
+		<xmin>-5.000000</xmin>
+		<xmax>-4.000000</xmax>
+		<ymin>0.000000</ymin>
+		<ymax>0.250000</ymax>
+		<zmin>0.000000</zmin>
+		<zmax>1.000000</zmax>
+	</obstacle>
+	<obstacle>
+		<xmin>-5.000000</xmin>
+		<xmax>-4.000000</xmax>
+		<ymin>0.000000</ymin>
+		<ymax>0.250000</ymax>
+		<zmin>4.000000</zmin>
+		<zmax>5.000000</zmax>
+	</obstacle>
+	<obstacle>
+		<xmin>-4.000000</xmin>
+		<xmax>-3.000000</xmax>
+		<ymin>0.000000</ymin>
+		<ymax>0.250000</ymax>
+		<zmin>-3.000000</zmin>
+		<zmax>-2.000000</zmax>
+	</obstacle>
+	<obstacle>
+		<xmin>-4.000000</xmin>
+		<xmax>-3.000000</xmax>
+		<ymin>0.000000</ymin>
+		<ymax>0.250000</ymax>
+		<zmin>-1.000000</zmin>
+		<zmax>0.000000</zmax>
+	</obstacle>
+	<obstacle>
+		<xmin>-4.000000</xmin>
+		<xmax>-3.000000</xmax>
+		<ymin>0.000000</ymin>
+		<ymax>0.250000</ymax>
+		<zmin>3.000000</zmin>
+		<zmax>4.000000</zmax>
+	</obstacle>
+	<obstacle>
+		<xmin>-4.000000</xmin>
+		<xmax>-3.000000</xmax>
+		<ymin>0.000000</ymin>
+		<ymax>0.250000</ymax>
+		<zmin>4.000000</zmin>
+		<zmax>5.000000</zmax>
+	</obstacle>
+	<obstacle>
+		<xmin>-3.000000</xmin>
+		<xmax>-2.000000</xmax>
+		<ymin>0.000000</ymin>
+		<ymax>0.250000</ymax>
+		<zmin>-2.000000</zmin>
+		<zmax>-1.000000</zmax>
+	</obstacle>
+	<obstacle>
+		<xmin>-3.000000</xmin>
+		<xmax>-2.000000</xmax>
+		<ymin>0.000000</ymin>
+		<ymax>0.250000</ymax>
+		<zmin>-1.000000</zmin>
+		<zmax>0.000000</zmax>
+	</obstacle>
+	<obstacle>
+		<xmin>-3.000000</xmin>
+		<xmax>-2.000000</xmax>
+		<ymin>0.000000</ymin>
+		<ymax>0.250000</ymax>
+		<zmin>3.000000</zmin>
+		<zmax>4.000000</zmax>
+	</obstacle>
+	<obstacle>
+		<xmin>-2.000000</xmin>
+		<xmax>-1.000000</xmax>
+		<ymin>0.000000</ymin>
+		<ymax>0.250000</ymax>
+		<zmin>-3.000000</zmin>
+		<zmax>-2.000000</zmax>
+	</obstacle>
+	<obstacle>
+		<xmin>-2.000000</xmin>
+		<xmax>-1.000000</xmax>
+		<ymin>0.000000</ymin>
+		<ymax>0.250000</ymax>
+		<zmin>-1.000000</zmin>
+		<zmax>0.000000</zmax>
+	</obstacle>
+	<obstacle>
+		<xmin>-2.000000</xmin>
+		<xmax>-1.000000</xmax>
+		<ymin>0.000000</ymin>
+		<ymax>0.250000</ymax>
+		<zmin>0.000000</zmin>
+		<zmax>1.000000</zmax>
+	</obstacle>
+	<obstacle>
+		<xmin>-2.000000</xmin>
+		<xmax>-1.000000</xmax>
+		<ymin>0.000000</ymin>
+		<ymax>0.250000</ymax>
+		<zmin>2.000000</zmin>
+		<zmax>3.000000</zmax>
+	</obstacle>
+	<obstacle>
+		<xmin>-1.000000</xmin>
+		<xmax>0.000000</xmax>
+		<ymin>0.000000</ymin>
+		<ymax>0.250000</ymax>
+		<zmin>-4.000000</zmin>
+		<zmax>-3.000000</zmax>
+	</obstacle>
+	<obstacle>
+		<xmin>-1.000000</xmin>
+		<xmax>0.000000</xmax>
+		<ymin>0.000000</ymin>
+		<ymax>0.250000</ymax>
+		<zmin>1.000000</zmin>
+		<zmax>2.000000</zmax>
+	</obstacle>
+	<obstacle>
+		<xmin>-1.000000</xmin>
+		<xmax>0.000000</xmax>
+		<ymin>0.000000</ymin>
+		<ymax>0.250000</ymax>
+		<zmin>2.000000</zmin>
+		<zmax>3.000000</zmax>
+	</obstacle>
+	<obstacle>
+		<xmin>-1.000000</xmin>
+		<xmax>0.000000</xmax>
+		<ymin>0.000000</ymin>
+		<ymax>0.250000</ymax>
+		<zmin>4.000000</zmin>
+		<zmax>5.000000</zmax>
+	</obstacle>
+	<obstacle>
+		<xmin>0.000000</xmin>
+		<xmax>1.000000</xmax>
+		<ymin>0.000000</ymin>
+		<ymax>0.250000</ymax>
+		<zmin>-4.000000</zmin>
+		<zmax>-3.000000</zmax>
+	</obstacle>
+	<obstacle>
+		<xmin>0.000000</xmin>
+		<xmax>1.000000</xmax>
+		<ymin>0.000000</ymin>
+		<ymax>0.250000</ymax>
+		<zmin>-2.000000</zmin>
+		<zmax>-1.000000</zmax>
+	</obstacle>
+	<obstacle>
+		<xmin>0.000000</xmin>
+		<xmax>1.000000</xmax>
+		<ymin>0.000000</ymin>
+		<ymax>0.250000</ymax>
+		<zmin>2.000000</zmin>
+		<zmax>3.000000</zmax>
+	</obstacle>
+	<obstacle>
+		<xmin>1.000000</xmin>
+		<xmax>2.000000</xmax>
+		<ymin>0.000000</ymin>
+		<ymax>0.250000</ymax>
+		<zmin>0.000000</zmin>
+		<zmax>1.000000</zmax>
+	</obstacle>
+	<obstacle>
+		<xmin>1.000000</xmin>
+		<xmax>2.000000</xmax>
+		<ymin>0.000000</ymin>
+		<ymax>0.250000</ymax>
+		<zmin>2.000000</zmin>
+		<zmax>3.000000</zmax>
+	</obstacle>
+	<obstacle>
+		<xmin>2.000000</xmin>
+		<xmax>3.000000</xmax>
+		<ymin>0.000000</ymin>
+		<ymax>0.250000</ymax>
+		<zmin>0.000000</zmin>
+		<zmax>1.000000</zmax>
+	</obstacle>
+	<obstacle>
+		<xmin>2.000000</xmin>
+		<xmax>3.000000</xmax>
+		<ymin>0.000000</ymin>
+		<ymax>0.250000</ymax>
+		<zmin>4.000000</zmin>
+		<zmax>5.000000</zmax>
+	</obstacle>
+	<obstacle>
+		<xmin>3.000000</xmin>
+		<xmax>4.000000</xmax>
+		<ymin>0.000000</ymin>
+		<ymax>0.250000</ymax>
+		<zmin>0.000000</zmin>
+		<zmax>1.000000</zmax>
+	</obstacle>
+	<obstacle>
+		<xmin>3.000000</xmin>
+		<xmax>4.000000</xmax>
+		<ymin>0.000000</ymin>
+		<ymax>0.250000</ymax>
+		<zmin>1.000000</zmin>
+		<zmax>2.000000</zmax>
+	</obstacle>
+	<obstacle>
+		<xmin>4.000000</xmin>
+		<xmax>5.000000</xmax>
+		<ymin>0.000000</ymin>
+		<ymax>0.250000</ymax>
+		<zmin>1.000000</zmin>
+		<zmax>2.000000</zmax>
+	</obstacle>
+	<agent>
+	<name>agent0</name>
+<initialConditions>
+		<radius>0.500000</radius>
+		<position> <x>-3.620853</x> <y>0.000000</y> <z>-3.932460</z> </position>
+		<direction> <x>-0.454222</x> <y>0.000000</y> <z>-0.890888</z> </direction>
+		<speed>0.000000</speed>
+	</initialConditions>
+	<goalSequence>
+		<seekStaticTarget>
+			<targetLocation> <x>2.500303</x> <y>0.000000</y> <z>-4.234939</z> </targetLocation>
+			<desiredSpeed>1.701875</desiredSpeed>
+			<timeDuration>0.000000</timeDuration>
+			<targetDirection> <x>0.000000</x> <y>0.000000</y> <z>0.000000</z> </targetDirection>
+			<flowType></flowType>
+			<random>false</random>
+		</seekStaticTarget>
+	</goalSequence>
+</agent>
+	<agent>
+	<name>agent1</name>
+<initialConditions>
+		<radius>0.500000</radius>
+		<position> <x>3.310215</x> <y>0.000000</y> <z>-2.427373</z> </position>
+		<direction> <x>-0.902308</x> <y>0.000000</y> <z>0.431093</z> </direction>
+		<speed>0.000000</speed>
+	</initialConditions>
+	<goalSequence>
+		<seekStaticTarget>
+			<targetLocation> <x>-2.795862</x> <y>0.000000</y> <z>2.078198</z> </targetLocation>
+			<desiredSpeed>1.520873</desiredSpeed>
+			<timeDuration>0.000000</timeDuration>
+			<targetDirection> <x>0.000000</x> <y>0.000000</y> <z>0.000000</z> </targetDirection>
+			<flowType></flowType>
+			<random>false</random>
+		</seekStaticTarget>
+	</goalSequence>
+</agent>
+	<agent>
+	<name>agent2</name>
+<initialConditions>
+		<radius>0.500000</radius>
+		<position> <x>-2.016619</x> <y>0.000000</y> <z>-4.424523</z> </position>
+		<direction> <x>-0.497623</x> <y>0.000000</y> <z>-0.867393</z> </direction>
+		<speed>0.000000</speed>
+	</initialConditions>
+	<goalSequence>
+		<seekStaticTarget>
+			<targetLocation> <x>2.172227</x> <y>0.000000</y> <z>-1.143200</z> </targetLocation>
+			<desiredSpeed>2.111917</desiredSpeed>
+			<timeDuration>0.000000</timeDuration>
+			<targetDirection> <x>0.000000</x> <y>0.000000</y> <z>0.000000</z> </targetDirection>
+			<flowType></flowType>
+			<random>false</random>
+		</seekStaticTarget>
+	</goalSequence>
+</agent>
+	<agent>
+	<name>agent3</name>
+<initialConditions>
+		<radius>0.500000</radius>
+		<position> <x>1.285869</x> <y>0.000000</y> <z>3.582185</z> </position>
+		<direction> <x>0.962812</x> <y>0.000000</y> <z>0.270174</z> </direction>
+		<speed>0.000000</speed>
+	</initialConditions>
+	<goalSequence>
+		<seekStaticTarget>
+			<targetLocation> <x>-4.139147</x> <y>0.000000</y> <z>2.277174</z> </targetLocation>
+			<desiredSpeed>1.366300</desiredSpeed>
+			<timeDuration>0.000000</timeDuration>
+			<targetDirection> <x>0.000000</x> <y>0.000000</y> <z>0.000000</z> </targetDirection>
+			<flowType></flowType>
+			<random>false</random>
+		</seekStaticTarget>
+	</goalSequence>
+</agent>
+</SteerBenchTestCase>

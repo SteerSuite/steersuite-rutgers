@@ -134,11 +134,30 @@ void GLFWEngineDriver::init(SimulationOptions * options)
 void GLFWEngineDriver::finish()
 {
 	_engine->finish();
-
+	//DrawLib::finished();
 	delete _engine;
 	_engine = NULL;
 
 	glfwTerminate();
+	_alreadyInitialized = false;
+	_engine = NULL;
+	_mouseX = 0;
+	_mouseY = 0;
+	_wheelPos = 0;
+	_moveCameraOnMouseMotion = false;
+	_rotateCameraOnMouseMotion = false;
+	_zoomCameraOnMouseMotion = false;
+	_multisampleAntialiasingSupported = false; // until we find out later
+	_agentNearestToMouse = NULL;
+	_nextScreenshotNumber = 0;
+	_dumpFrames = false;
+	_done = false;
+
+	_useAntialiasing = true;
+	_canUseMouseToSelectAgents = true;
+	_canUseMouseWheelZoom = true;
+
+	_options = NULL;
 }
 
 //
@@ -146,9 +165,35 @@ void GLFWEngineDriver::finish()
 //
 const char * GLFWEngineDriver::getData()
 {
-	char * out = (char *)malloc(sizeof(char) * 20);
-	strncpy(out, "EXIT_SUCCESS_GLFW", 20);
-	return out;
+	ModuleInterface * moduleInterface = (_engine->getModule("scenario"));
+	ModuleInterface * aimoduleInterface = (_engine->getModule("sfAI"));
+	std::string out;
+	char * outptr;
+	if ( moduleInterface != NULL && (aimoduleInterface != NULL) )
+	{
+		std::string out1 = moduleInterface->getData();
+		std::string out2 = aimoduleInterface->getData();
+
+		std::vector<std::string> vout1 = split(out1, '\n');
+		std::vector<std::string> vout2 = split(out2, '\n');
+
+		for (unsigned int i =0; i < vout1.size(); i++)
+		{
+			// I think the space is neccessary to sperate item
+			// consider changing to another delimiter
+			out = out + vout1.at(i) + " " + vout2.at(i) + "\n";
+		}
+
+		outptr = (char *) malloc(sizeof(char) * out.length());
+		strncpy(outptr, out.c_str(), out.length());
+		return outptr;
+	}
+	else
+	{
+		char * out = (char *) malloc(sizeof(char)*20);
+		strncpy(out, "EXIT_SUCCESS_", 20);
+		return out;
+	}
 }
 
 LogData * GLFWEngineDriver::getLogData()
@@ -173,6 +218,7 @@ void GLFWEngineDriver::_initGLFW()
 	if (glfwInit() == GL_FALSE) {
 		throw GenericException("Initializing GLFW failed.\n");
 	}
+	_options->glfwEngineDriverOptions.stereoMode = "off";
 
 	// specify some configuration that needs to happen before creating the window
 	glfwOpenWindowHint(GLFW_FSAA_SAMPLES, 4);
@@ -255,6 +301,88 @@ void GLFWEngineDriver::_initGL()
 	processWindowResizedEvent(w, h);
 }
 
+void GLFWEngineDriver::loadSimulation()
+{
+
+	#ifdef _DEBUG1
+	bool verbose = true;  // TODO: make this a user option...
+	#else
+	bool verbose = false;
+	#endif
+	if (verbose) std::cout << "\rInitializing...\n";
+	_engine->initializeSimulation();
+
+	if (verbose) std::cout << "\rPreprocessing...\n";
+	_engine->preprocessSimulation();
+}
+
+void GLFWEngineDriver::unloadSimulation()
+{
+	#ifdef _DEBUG1
+	bool verbose = true;  // TODO: make this a user option...
+	#else
+	bool verbose = false;
+	#endif
+
+	if (verbose) std::cout << "\rPostprocessing...\n";
+	_engine->postprocessSimulation();
+
+	if (verbose) std::cout << "\rCleaning up...\n";
+	_engine->cleanupSimulation();
+
+	if (verbose) std::cout << "\rDone.\n";
+}
+
+void GLFWEngineDriver::startSimulation()
+{
+	#ifdef _DEBUG1
+	bool verbose = true;  // TODO: make this a user option...
+	#else
+	bool verbose = false;
+	#endif
+	bool done = false;
+	// loop until the engine tells us its done
+	if (verbose) std::cout << "\rSimulation is running...\n";
+	while (!_done) {
+
+		// Finding the agent closest to mouse uses an exhaustive search across all agents.
+		// the algorithm could probably be better (i.e. use the spatial database to find it)
+		// but its not (yet) worth implementing that way.  Just change DEFAULT_CAN_USE_MOUSE_SELECTION to
+		// false if you want to disable it.
+		if (_canUseMouseToSelectAgents) {
+			_findClosestAgentToMouse();
+		}
+
+		// Update the AI.
+		if (_engine->update(_paused) == false) {
+			// The engine indicated the simulaton should finish
+			_done = true;
+		}
+		else {
+			// The simulation is continuing, so draw everything using openGL.
+			_drawScene();
+		}
+
+		// std::cout << getEngine()->getClock().getRealFps() << " fps" << std::endl;
+		// sprintf( titlestr, "SteerSuite (%.1f FPS)", getRealFps() );
+		std::ostringstream stream;
+		stream << "SteerSuite: " << getEngine()->getClock().getRealFps() << " fps";
+		std::string fpsString = stream.str();
+
+		// Convert the new window title to a c_str and set it
+		const char* pszConstString = fpsString.c_str();
+		glfwSetWindowTitle(pszConstString);
+		// glfwSetWindowTitle( getEngine()->getClock().getRealFps() << " fps" );
+	}
+
+	if (verbose) std::cout << "\rFrame Number:   " << _engine->getClock().getCurrentFrameNumber() << std::endl;
+}
+
+void GLFWEngineDriver::stopSimulation()
+{
+	// TODO not sure what to do here yet, seems like it is meant for multi-threading
+	throw Util::GenericException("CommandLineEngineDriver does not support stopSimulation().");
+}
 
 //
 // run() - returns if the simulation is done, but there are other ways the program will exit (e.g. user closes the window)

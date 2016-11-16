@@ -1,0 +1,84 @@
+<!--
+  Copyright (c) 2009-2015  Glen Berseth, Mubbasir Kapadia, Shawn Singh, Petros Faloutsos, Glenn Reinman
+  See license.txt for complete license.
+--><parameterOptimitationExperiment>
+<!-- <parameter type="float" name="$1">\n\t\t\t<min type="float">1</min>\n\t\t\t<max type="float">5</max>\n\t\t\t<original type="float">2.6</original>\n\t\t\t<discretization type="float">20</discretization>\n\t\t</parameter> -->
+<!-- Current limitation is that all parameter need to be specified so the database
+does not fault on not having enough arguments to insert the data into the table. To
+compensate for this just name the discretization 0. -->
+	 <ai_config name="sfAI" >
+
+		<parameter type="float" name="sf_acceleration">
+			<min type="float">0.05</min>
+			<max type="float">2.0</max>
+			<original type="float">0.5</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="sf_personal_space_threshold">
+			<min type="float">0.1</min>
+			<max type="float">1</max>
+			<original type="float">0.3</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="sf_agent_repulsion_importance">
+			<min type="float">0.05</min>
+			<max type="float">1</max>
+			<original type="float">0.3</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="sf_query_radius">
+			<min type="float">1</min>
+			<max type="float">10</max>
+			<original type="float">4.0</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="sf_body_force">
+			<min type="float">500</min>
+			<max type="float">5000</max>
+			<original type="float">1500</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="sf_agent_body_force">
+			<min type="float">500</min>
+			<max type="float">5000</max>
+			<original type="float">1500</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="sf_sliding_friction_force">
+			<min type="float">1000</min>
+			<max type="float">10000</max>
+			<original type="float">3000.0</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="sf_agent_b">
+			<min type="float">0.01</min>
+			<max type="float">5</max>
+			<original type="float">0.08</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="sf_agent_a">
+			<min type="float">1</min>
+			<max type="float">100</max>
+			<original type="float">25.0</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="sf_wall_b">
+			<min type="float">0.01</min>
+			<max type="float">5</max>
+			<original type="float">0.08</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="sf_wall_a">
+			<min type="float">1</min>
+			<max type="float">100</max>
+			<original type="float">25.0</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="sf_max_speed">
+			<min type="float">1</min>
+			<max type="float">5</max>
+			<original type="float">2.6</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+	</ai_config>
+</parameterOptimitationExperiment>

@@ -754,7 +754,26 @@ project "steerbench"
 			"tinyxml"
 		}
 
-
+project "scenario"
+	language "C++"
+	kind "SharedLib"
+	includedirs { 
+		"../steerlib/include",
+		"../scenario/include",
+		"../external",
+		"../util/include",
+	}
+	files { 
+		"../scenario/include/*.h",
+		"../scenario/src/*.cpp"
+	}
+	links { 
+		"steerlib",
+		"util",
+	}
+	
+	buildoptions("-std=c++0x -ggdb" )
+	
 if file_exists("premake4-dev.lua")
 	then
 	dofile("premake4-dev.lua")

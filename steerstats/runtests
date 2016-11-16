@@ -1,0 +1,14 @@
+#!/bin/bash
+
+
+for file in `find ../testcases/ -name '*.xml' -print 2>/dev/null`
+do
+    echo $file
+    echo "Dirname:"
+    echo ${file##*/}
+    filename=${file##*/}
+    fileprefix=${filename%.*}
+    dirname $file
+    echo "fileprefix: $fileprefix"
+    ../build/bin/steersim -ai footstepAI -config configs/footstepAI-config.xml -numframes 1000 -testcase $file -module footstepAI,record="rec_folder/$fileprefix.foot.rec"
+done
