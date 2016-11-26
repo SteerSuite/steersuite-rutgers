@@ -14,6 +14,7 @@
 // #include "SearchAgent.h"
 #include "SearchAIModule.h"
 #include "planning/AStarPlanner.h"
+#include "map"
 /**
  * @brief An example agent with very basic AI, that is part of the simpleAI plugin.
  *
@@ -34,6 +35,14 @@ public:
 	void updateAI(float timeStamp, float dt, unsigned int frameNumber);
 	void disable();
 	void draw();
+
+	std::set<SteerLib::SpatialDatabaseItemPtr> _neighbors;
+	float xMinIndex = -100;
+	float xMaxIndex = 100;
+	float zMinIndex = -100;
+	float zMaxIndex = 100;
+
+	set<Util::Point> obstacle;
 
 	bool enabled() const { return _enabled; }
 	Util::Point position() const { return __position; }
