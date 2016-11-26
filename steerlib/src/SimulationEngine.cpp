@@ -419,21 +419,22 @@ void SimulationEngine::preprocessSimulation()
 			_agents.at(a)->reset(_agentInitialConditions.at(a), this);
 		}
 	}
+
 	for ( iter = _modulesInExecutionOrder.begin(); iter != _modulesInExecutionOrder.end();  ++iter ) {
 		(*iter)->preprocessSimulation();
 	}
 
 	this->_pathPlanner->refresh();
-	/*
-	// reset the agents
-	for (size_t a=0; a < _agentInitialConditions.size(); a++)
-	{
-		if ( !_agents.at(a)->enabled() )
-		{
-			_agents.at(a)->reset(_agentInitialConditions.at(a),this);
-		}
-	}
-	*/
+
+	//// reset the agents
+	//for (size_t a=0; a < _agentInitialConditions.size(); a++)
+	//{
+	//	if ( !_agents.at(a)->enabled() )
+	//	{
+	//		_agents.at(a)->reset(_agentInitialConditions.at(a),this);
+	//	}
+	//}
+	
 	// _agentInitialConditions.clear();
 
 	_engineState.transitionToState(ENGINE_STATE_SIMULATION_READY_FOR_UPDATE);
