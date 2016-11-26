@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# Use at your own risk
+# Author Glen Berseth
+# May 27, 2013
+# you might need to change the expected picture file suffix
+# by default this script assumes ppm images
+# Ubuntu: might need to install libavcodec-extra-53
+
+baseDirectory=$1
+fileBasename="frame"
+frameSize=$2
+
+if [ "x$3" = "x" ]
+then
+	filename="scenario"
+else
+	filename=$3
+fi
+
+#example Usage
+# ./encodeVideo <dir> <width_x_height>
+# ./encodeVideo ./frames/ 1200x800
+
+path=$baseDirectory$fileBasename
+
+echo $dir
+
+# echo $baseDirectory
+
+
+ffmpeg -y -i $path%d.ppm -acodec libfaac -ar 44100 -ab 96k -coder ac -me_range 16 -subq 5 -sc_threshold 40 -vcodec libx264 -s $frameSize -pix_fmt yuv420p $filename.mp4 
+
+# Windows
+# /ffmpeg.exe -y -i screen_1000x800_%d.png -acodec libfaac -ar 44100 -ab 96k -coder ac -me_range 16 -subq 5 -sc_threshold 40 -vcodec libx264 -s 1000x800 -b 1600k -i_qfactor 0.71 -keyint_min 25 -b_strategy 1 -g 250 "scenario_".mp4
+# /cygdrive/d/Programs/ffmpeg-20130713-git-aac57c7-win64-static/bin/ffmpeg.exe -y -i screen_1000x800_%d.png -acodec libfaac -ar 44100 -ab 96k -coder ac -me_range 16 -subq 5 -sc_threshold 40 -vcodec libx264 -s 1000x800 -b 1600k -i_qfactor 0.71 -keyint_min 25 -b_strategy 1 -g 250 "scenario_".mp4

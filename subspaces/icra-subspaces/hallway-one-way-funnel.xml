@@ -1,0 +1,197 @@
+<!--
+  Copyright (c) 2009-2015  Glen Berseth, Mubbasir Kapadia, Shawn Singh, Petros Faloutsos, Glenn Reinman
+  See license.txt for complete license.
+--><!--
+  Copyright (c) 2009 Shawn Singh, Mubbasir Kapadia, Petros Faloutsos, Glenn Reinman,
+  Glen Berseth
+  See license.txt for complete license.
+-->
+
+<SteerSuiteSubSpace xmlns="http://www.magix.ucla.edu/steerbench"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://www.magix.ucla.edu/steerbench 
+                                        TestCaseSchema.xsd"
+                    SubSpaceSamples="1">
+
+  <header>
+    <version>1.2</version>
+    <name>hallway-one-way-funnel</name>
+    <worldBounds>
+      <xmin>-45</xmin>
+      <xmax>45</xmax>
+      <ymin>0</ymin>
+      <ymax>0</ymax>
+      <zmin>-45</zmin>
+      <zmax>45</zmax>
+    </worldBounds>
+  </header>
+  
+  <suggestedCameraView>
+    <position> <x>0</x> <y>100</y> <z>-0</z> </position>
+    <lookat> <x>0</x> <y>0</y> <z>0</z> </lookat>
+    <up> <x>0</x> <y>1</y> <z>0</z> </up>
+    <fovy>45</fovy>
+  </suggestedCameraView>
+
+  <obstacle>
+    <xmin>-25</xmin>
+    <xmax>40</xmax>
+    <ymin>0</ymin>
+    <ymax>0.5</ymax>
+    <zmin>2.5</zmin>
+    <zmax>5.0</zmax>
+  </obstacle>
+
+  <obstacle>
+    <xmin>-25</xmin>
+    <xmax>40</xmax>
+    <ymin>0</ymin>
+    <ymax>0.5</ymax>
+    <zmin>-5.0</zmin>
+    <zmax>-2.5</zmax>
+  </obstacle>
+
+<!-- Funnel Start -->
+ <obstacle>
+    <xmin>-26</xmin>
+    <xmax>-25</xmax>
+    <ymin>0</ymin>
+    <ymax>0.5</ymax>
+    <zmin>0.6858</zmin>
+    <zmax>5.0</zmax>
+  </obstacle>
+
+  <obstacle>
+    <xmin>-26</xmin>
+    <xmax>-25</xmax>
+    <ymin>0</ymin>
+    <ymax>0.5</ymax>
+    <zmin>-5.0</zmin>
+    <zmax>-0.6858</zmax>
+  </obstacle>
+<!-- Funnel End -->
+
+<!--
+    <agentEmitter>
+      <name>EmitA</name>
+      <initialConditions>
+        <radius>0.5</radius> 
+        <position> <x>30</x> <y>0</y> <z>0</z> </position>     
+        <direction> <x>1</x> <y>0</y> <z>0</z> </direction>
+        <speed>1.2</speed>
+      </initialConditions>
+
+      <goalSequence>
+        <seekAxisAlignedBoxRegion>
+          <targetLocation> <x>-30</x> <y>0</y> <z>0</z> </targetLocation>
+          <desiredSpeed>1.3</desiredSpeed>
+          <timeDuration>1000.0</timeDuration>
+        </seekAxisAlignedBoxRegion>	      
+      </goalSequence>
+    </agentEmitter>
+-->
+
+  <agentRegion>
+
+    <numAgents>100</numAgents>
+
+    <regionBounds>
+      <xmin>-17</xmin>
+      <xmax>-4.5</xmax>
+      <ymin>0</ymin>
+      <ymax>0</ymax>
+      <zmin>-2.0</zmin>
+      <zmax>2.0</zmax>
+    </regionBounds>
+
+    <initialConditions>
+      <direction> <x>1</x> <y>0</y> <z>0</z> </direction>
+      <radius>0.2286</radius>
+      <speed>1.2</speed>
+    </initialConditions>
+
+    <goalSequence>
+      <seekAxisAlignedBoxRegion>
+        <targetLocation> <x>-28.5</x> <y>0</y> <z>0</z> </targetLocation>
+        <desiredSpeed>1.3</desiredSpeed>
+        <timeDuration>1000.0</timeDuration>
+        <goalRegionBounds>
+          <xmin>-41</xmin>
+          <xmax>-28</xmax>
+          <ymin>0</ymin>
+          <ymax>0</ymax>
+          <zmin>-6</zmin>
+          <zmax>6</zmax>
+        </goalRegionBounds>
+        <Behaviour>
+			<SteeringAlgorithm>
+			sfAI
+			</SteeringAlgorithm>
+			 
+			<Parameters>
+			    <parameter>
+			        <key>sf_acceleration</key>
+			        <value>0.10</value>
+			    </parameter>
+			    <parameter>
+			        <key>sf_agent_a</key>
+			        <value>55.00</value>
+			    </parameter>
+			    <parameter>
+			        <key>sf_agent_b</key>
+			        <value>00.11</value>
+			    </parameter>
+			    <parameter>
+			        <key>sf_agent_body_force</key>
+			        <value>4000.0</value>
+			    </parameter>
+			    <parameter>
+			        <key>sf_wall_a</key>
+			        <value>65.0</value>
+			    </parameter>
+			    <parameter>
+			        <key>sf_query_radius</key>
+			        <value>10</value>
+			    </parameter>
+			    <parameter>
+			        <key>sf_body_force</key>
+			        <value>500</value>
+			    </parameter>
+			    <parameter>
+			        <key>sf_agent_repulsion_importance</key>
+			        <value>0.05</value>
+			    </parameter>
+			    <parameter>
+			        <key>sf_personal_space_threshold</key>
+			        <value>0.05</value>
+			    </parameter>
+			</Parameters>
+			
+		</Behaviour>
+      </seekAxisAlignedBoxRegion>
+    </goalSequence>
+
+  </agentRegion>
+
+  <!-- 
+  <agent>
+    <name>A</name>
+    <initialConditions>
+      <radius>0.5</radius>
+      <position> <x>-19</x> <y>0</y> <z>1</z> </position>
+      <direction> <x>-1</x> <y>0</y> <z>0</z> </direction>
+      <speed>0</speed>
+    </initialConditions>
+    <goalSequence>
+      <seekStaticTarget>
+        <targetLocation> <x>20</x> <y>0</y> <z>1</z> </targetLocation>
+        <desiredSpeed>1.3</desiredSpeed>
+        <timeDuration>1000.0</timeDuration>
+      </seekStaticTarget>
+    </goalSequence>
+
+  </agent>
+  -->
+
+</SteerSuiteSubSpace>
+

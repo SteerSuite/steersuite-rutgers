@@ -1,0 +1,12 @@
+
+# ./clearOldStatFiles data/scenarioRecordings/ data/scenarioFrames/ data/testCases/
+
+recordingDirectory="$1"
+frameDirectory="$2"
+testCasePath="$3"
+aiLogFilePath="$4"
+
+find $recordingDirectory -name "*.rec" | xargs rm
+find "$frameDirectory/scenario*" -name  "scenario*.xml" | xargs rm
+find $testCasePath -name "scenario*.xml" | xargs rm
+rm $aiLogFilePath

@@ -1,0 +1,62 @@
+#!/bin/bash
+
+# ./runStatsTest pprAI scenarioRecordings scenarioFrames testCases 2
+# ./runStatsTest footstepAI scenarioRecordings scenarioFrames testCases 3
+# ./runStatsTest ccAI scenarioRecordings scenarioFrames testCases 10
+# Or
+# ./runStatsTest ccAI scenarioRecordings scenarioFrames testCases 10 data/2
+
+# the root directory from here where everything will be stored
+
+if [ -z "$6" ]
+  then
+   dataPath="data"
+  else
+   dataPath="$6"
+fi
+
+
+benchmarkTechnique="composite02"
+aiModuleName=$1
+recordingDirectory="$dataPath/$2/"
+frameDirectory="$dataPath/$3/"
+ailogFilePath="$dataPath/$aiModuleName.log"
+testCasePath="$dataPath/$4/"
+scenarioSetAI="footstepAI" # choose the set of scenarios to re-run
+if [ -z "$7" ]
+  then
+   scenarioSetInitID="0"
+  else
+   scenarioSetInitID="$7"
+fi
+scenarioSetPath="$dataPath/scenarios/$scenarioSetAI/"
+numScenarios=$5
+frameSize="640x480"
+
+configFile="configs/pprAI-config2.xml"
+# configFile="configs/$aiModuleName-config.xml"
+
+# clear folders containing data
+./clearOldStatFiles $recordingDirectory $frameDirectory $testCasePath $ailogFilePath
+
+
+moduleParams="scenario,scenarioAI=$aiModuleName,numScenarios=$numScenarios,useBenchmark,benchmarkTechnique=$benchmarkTechnique,benchmarkLog=$dataPath/test.log,checkAgentValid,reducedGoals,fixedSpeed,fixedDirection,checkAgentRelevant,minAgents=3,ailogFileName=$ailogFilePath" #,randomSeed=120"
+moduleParams="$moduleParams,recFile=rec,recFileFolder=$recordingDirectory" # save record files for later benchmarking
+# moduleParams="$moduleParams,dumpFrames,framePath=$frameDirectory" #save test frames to make videos
+
+# one one of the following line should ever be included. THe operations exclude eachother.
+moduleParams="$moduleParams,dumpTestCases,testCasePath=$testCasePath" # part for dumping testcases
+# moduleParams="$moduleParams,scenarioSetPath=$scenarioSetPath,scenarioSetInitId=$scenarioSetInitID" # can be used to load bunch of testcases
+
+moduleParams="$moduleParams -commandline" 
+
+../build/bin/steersim -module $moduleParams -config $configFile
+# valgrind ../build/bin/steersim -module $moduleParams -config $configFile
+
+
+# encode all of the videos
+# echo "tools/encodeVideos $frameDirectory $numScenarios $frameSize"
+# tools/encodeVideos "$frameDirectory" $numScenarios $frameSize
+
+#insert everything into database
+# python InsertStatistics.py $moduleParams $configFile

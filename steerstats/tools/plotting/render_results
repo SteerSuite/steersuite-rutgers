@@ -1,0 +1,17 @@
+#!/bin/bash
+
+folder=$1
+echo $folder
+echo $folder'*.csv'
+for file in `find $folder -name '*.csv' -print 2>/dev/null`
+do
+    echo $file
+    echo "Dirname:"
+    echo ${file##*/}
+    filename=${file##*/}
+    fileprefix=${filename%.*}
+    dirname $file
+    echo "fileprefix: $fileprefix"
+    python PlotParameterData.py $file $fileprefix
+    # psql -d steersuitedb -U steeruser -f $filename -A -F"," > "results/$fileprefix.csv"
+done
