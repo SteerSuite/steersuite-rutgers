@@ -43,6 +43,51 @@ void CommandLineEngineDriver::init(SteerLib::SimulationOptions * options)
 	_engine->init(options, this);
 }
 
+void CommandLineEngineDriver::loadSimulation()
+{
+	#ifdef _DEBUG1
+	bool verbose = true;  // TODO: make this a user option...
+	#else
+	bool verbose = false;
+	#endif
+	if (verbose) std::cout << "\rInitializing...\n";
+	_engine->initializeSimulation();
+	if (verbose) std::cout << "\rPreprocessing...\n";
+	_engine->preprocessSimulation();
+}
+void CommandLineEngineDriver::unloadSimulation()
+{
+	#ifdef _DEBUG1
+	bool verbose = true;  // TODO: make this a user option...
+	#else
+	bool verbose = false;
+	#endif
+	if (verbose) std::cout << "\rPostprocessing...\n";
+	_engine->postprocessSimulation();
+	if (verbose) std::cout << "\rCleaning up...\n";
+	_engine->cleanupSimulation();
+	if (verbose) std::cout << "\rDone.\n";
+}
+void CommandLineEngineDriver::startSimulation()
+{
+	#ifdef _DEBUG1
+	bool verbose = true;  // TODO: make this a user option...
+	#else
+	bool verbose = false;
+	#endif
+	bool done = false;
+	// loop until the engine tells us its done
+	while (!done) {
+		if (verbose) std::cout << "\rFrame Number:   " << _engine->getClock().getCurrentFrameNumber();
+		done = !_engine->update(false);
+	}
+	if (verbose) std::cout << "\rFrame Number:   " << _engine->getClock().getCurrentFrameNumber() << std::endl;
+}
+void CommandLineEngineDriver::stopSimulation()
+{
+	// TODO not sure what to do here yet, seems like it is meant for multi-threading
+	throw Util::GenericException("CommandLineEngineDriver does not support stopSimulation().");
+}
 
 //
 // run() - never returns, will end the program properly when appropriate
@@ -77,22 +122,6 @@ void CommandLineEngineDriver::run()
 	_engine->cleanupSimulation();
 
 	if (verbose) std::cout << "\rDone.\n";
-}
-
-std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
-    std::stringstream ss(s);
-    std::string item;
-    while (std::getline(ss, item, delim)) {
-        elems.push_back(item);
-    }
-    return elems;
-}
-
-
-std::vector<std::string> split(const std::string &s, char delim) {
-    std::vector<std::string> elems;
-    split(s, delim, elems);
-    return elems;
 }
 
 const char * CommandLineEngineDriver::getData()
@@ -132,7 +161,7 @@ LogData * CommandLineEngineDriver::getLogData()
 {
 	ModuleInterface * moduleInterface = (_engine->getModule("scenario"));
 	LogData * lD = moduleInterface->getLogData();
-	ModuleInterface * aimoduleInterface = (_engine->getModule("sfAI")); // TODO support all steering algorithms
+	ModuleInterface * aimoduleInterface = (_engine->getModule("rvo2dAI")); // TODO support all steering algorithms
 
 	// TODO use this properly instead.
 	std::vector<SteerLib::ModuleInterface*> modules = _engine-> getAllModules();

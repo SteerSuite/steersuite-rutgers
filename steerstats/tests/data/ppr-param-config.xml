@@ -1,0 +1,242 @@
+<!--
+  Copyright (c) 2009-2015  Glen Berseth, Mubbasir Kapadia, Shawn Singh, Petros Faloutsos, Glenn Reinman
+  See license.txt for complete license.
+--><parameterOptimitationExperiment>
+<!-- <parameter type="float" name="$1">\n\t\t\t<min type="float">1</min>\n\t\t\t<max type="float">5</max>\n\t\t\t<original type="float">2.6</original>\n\t\t\t<discretization type="float">20</discretization>\n\t\t</parameter> -->
+	<ai_config name="pprAI" parameters="39" discretization="20">
+		<parameter type="float" name="ped_max_speed">
+			<min type="float">1</min>
+			<max type="float">5</max>
+			<original type="float">2.6</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="ped_typical_speed">
+			<min type="float">0.5</min>
+			<max type="float">5</max>
+			<original type="float">1.3</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="ped_max_force">
+			<min type="float">8</min>
+			<max type="float">22</max>
+			<original type="float">14</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="ped_max_speed_factor">
+			<min type="float">0.6</min>
+			<max type="float">4.7</max>
+			<original type="float">1.7</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="ped_faster_speed_factor">
+			<min type="float">0.55</min>
+			<max type="float">4.2</max>
+			<original type="float">1.31</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="ped_slightly_faster_speed_factor">
+			<min type="float">0.4</min>
+			<max type="float">3.4</max>
+			<original type="float">1.15</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="ped_typical_speed_factor">
+			<min type="float">0.5</min>
+			<max type="float">1.5</max>
+			<original type="float">1</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="ped_slightly_slower_speed_factor">
+			<min type="float">0.15</min>
+			<max type="float">1.2</max>
+			<original type="float">0.77</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="ped_slower_speed_factor">
+			<min type="float">0.1</min>
+			<max type="float">1</max>
+			<original type="float">0.5</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="ped_cornering_turn_rate">
+			<min type="float">0.83</min>
+			<max type="float">3.76</max>
+			<original type="float">1.9</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="ped_adjustment_turn_rate">
+			<min type="float">0.03</min>
+			<max type="float">0.54</max>
+			<original type="float">0.16</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="ped_faster_avoidance_turn_rate">
+			<min type="float">0.15</min>
+			<max type="float">0.87</max>
+			<original type="float">0.55</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="ped_typical_avoidance_turn_rate">
+			<min type="float">0.08</min>
+			<max type="float">0.75</max>
+			<original type="float">0.26</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="ped_braking_rate">
+			<min type="float">0.5</min>
+			<max type="float">1.5</max>
+			<original type="float">0.95</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="ped_comfort_zone">
+			<min type="float">0.7</min>
+			<max type="float">2.8</max>
+			<original type="float">1.5</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="ped_query_radius">
+			<min type="float">5.0</min>
+			<max type="float">21.0</max>
+			<original type="float">10.0</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="ped_similar_direction_dot_product_threshold">
+			<min type="float">0.78</min>
+			<max type="float">0.999</max>
+			<original type="float">0.94</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="ped_same_direction_dot_product_threshold">
+			<min type="float">0.89</min>
+			<max type="float">0.999</max>
+			<original type="float">0.99</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="ped_oncoming_prediction_threshold">
+			<min type="float">-0.99</min>
+			<max type="float">-0.78</max>
+			<original type="float">-0.95</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="ped_oncoming_reaction_threshold">
+			<min type="float">-0.99</min>
+			<max type="float">-0.78</max>
+			<original type="float">-0.95</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="ped_wrong_direction_dot_product_threshold">
+			<min type="float">0.23</min>
+			<max type="float">0.78</max>
+			<original type="float">0.55</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="ped_threat_distance_threshold">
+			<min type="float">3</min>
+			<max type="float">16.8</max>
+			<original type="float">8</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="ped_threat_min_time_threshold">
+			<min type="float">0.37</min>
+			<max type="float">1.45</max>
+			<original type="float">0.8</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="ped_threat_max_time_threshold">
+			<min type="float">1.22</min>
+			<max type="float">8.77</max>
+			<original type="float">4</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="ped_predictive_anticipation_factor">
+			<min type="float">2.33</min>
+			<max type="float">8.39</max>
+			<original type="float">5</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="ped_reactive_anticipation_factor">
+			<min type="float">0.33</min>
+			<max type="float">2.31</max>
+			<original type="float">1.1</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="ped_crowd_influence_factor">
+			<min type="float">0.11</min>
+			<max type="float">0.61</max>
+			<original type="float">0.3</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="ped_facing_static_object_threshold">
+			<min type="float">0.08</min>
+			<max type="float">0.61</max>
+			<original type="float">0.3</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="ped_ordinary_steering_strength">
+			<min type="float">0.001</min>
+			<max type="float">0.2</max>
+			<original type="float">2.6</original>
+			<discretization type="float">0.05</discretization>
+		</parameter>
+		<parameter type="float" name="ped_oncoming_threat_avoidance_strength">
+			<min type="float">0.05</min>
+			<max type="float">0.4</max>
+			<original type="float">0.15</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="ped_cross_threat_avoidance_strength">
+			<min type="float">0.73</min>
+			<max type="float">0.999</max>
+			<original type="float">0.9</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="ped_max_turning_rate">
+			<min type="float">0.02</min>
+			<max type="float">0.23</max>
+			<original type="float">0.1</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="integer" name="ped_feeling_crowded_threshold">
+			<min type="integer">1</min>
+			<max type="integer">8</max>
+			<original type="integer">3</original>
+			<discretization type="integer">7</discretization>
+		</parameter>
+		<parameter type="float" name="ped_scoot_rate">
+			<min type="float">0.17</min>
+			<max type="float">0.78</max>
+			<original type="float">0.4</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="ped_reached_target_distance_threshold">
+			<min type="float">0.1</min>
+			<max type="float">0.9</max>
+			<original type="float">0.5</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="ped_dynamic_collision_padding">
+			<min type="float">0.02</min>
+			<max type="float">0.43</max>
+			<original type="float">0.2</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="integer" name="ped_furthest_local_target_distance">
+			<min type="integer">10</min>
+			<max type="integer">50</max>
+			<original type="integer">20</original>
+			<discretization type="integer">20</discretization>
+		</parameter>
+		<parameter type="integer" name="ped_next_waypoint_distance">
+			<min type="integer">30</min>
+			<max type="integer">90</max>
+			<original type="integer">60</original>
+			<discretization type="integer">20</discretization>
+		</parameter>
+		<parameter type="integer" name="ped_max_num_waypoints">
+			<min type="integer">10</min>
+			<max type="integer">50</max>
+			<original type="integer">20</original>
+			<discretization type="integer">20</discretization>
+		</parameter>	
+	</ai_config>
+</parameterOptimitationExperiment>

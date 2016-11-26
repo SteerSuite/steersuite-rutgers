@@ -12,7 +12,8 @@
 
 
 #include "SteerLib.h"
-
+#include "interfaces/EngineControllerInterface.h"
+#include "simulation/SimulationEngine.h"
 
 class STEERLIB_API CommandLineEngineDriver : public SteerLib::EngineControllerInterface
 {
@@ -31,10 +32,10 @@ public:
 	virtual bool isStartupControlSupported() { return false; }
 	virtual bool isPausingControlSupported() { return false; }
 	virtual bool isPaused() { return false; }
-	virtual void loadSimulation() { throw Util::GenericException("CommandLineEngineDriver does not support loadSimulation()."); }
-	virtual void unloadSimulation() { throw Util::GenericException("CommandLineEngineDriver does not support unloadSimulation()."); }
-	virtual void startSimulation() { throw Util::GenericException("CommandLineEngineDriver does not support startSimulation()."); }
-	virtual void stopSimulation() { throw Util::GenericException("CommandLineEngineDriver does not support stopSimulation()."); }
+	virtual void loadSimulation();
+	virtual void unloadSimulation();
+	virtual void startSimulation();
+	virtual void stopSimulation();
 	virtual void pauseSimulation() { throw Util::GenericException("CommandLineEngineDriver does not support pauseSimulation()."); }
 	virtual void unpauseSimulation() { throw Util::GenericException("CommandLineEngineDriver does not support unpauseSimulation()."); }
 	virtual void togglePausedState() { throw Util::GenericException("CommandLineEngineDriver does not support togglePausedState()."); }

@@ -1,0 +1,19 @@
+#!/bin/bash
+
+baseDirectory=$1
+scenarios=$2
+dirBasename="scenario"
+frameSize=$3
+
+dir=$baseDirectory$dirBasename
+
+echo $dir
+
+# echo $baseDirectory
+i=$4
+while [ $i -lt $scenarios ]
+do
+	currentDir="$dir$i"
+	ffmpeg -y -i $currentDir/frame%d.ppm -acodec libfaac -ar 44100 -ab 96k -coder ac -me_range 16 -subq 5 -sc_threshold 40 -vcodec libx264 -s $frameSize -b 1600k -cmp +chroma -partitions +parti4x4+partp8x8+partb8x8 -i_qfactor 0.71 -keyint_min 25 -b_strategy 1 -g 250 $currentDir.mp4 
+	i=$((i+1))
+done

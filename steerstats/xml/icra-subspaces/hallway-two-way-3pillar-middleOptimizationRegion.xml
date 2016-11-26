@@ -1,0 +1,50 @@
+<!--
+  Copyright (c) 2009-2015  Glen Berseth, Mubbasir Kapadia, Shawn Singh, Petros Faloutsos, Glenn Reinman
+  See license.txt for complete license.
+--><parameterOptimitationExperiment>
+<!-- <parameter type="float" name="$1">\n\t\t\t<min type="float">1</min>\n\t\t\t<max type="float">5</max>\n\t\t\t<original type="float">2.6</original>\n\t\t\t<discretization type="float">20</discretization>\n\t\t</parameter> -->
+<!-- Current limitation is that all parameter need to be specified so the database
+does not fault on not having enough arguments to insert the data into the table. To
+compensate for this just name the discretization 0.
+
+For this we need to somehow include the constraint that we don't want the pillars
+to intersect. -->
+	 <ai_config name="hallway-two-way-2pillar" >
+		<parameter type="float" name="p1_x">
+			<min type="float">-3</min>
+			<max type="float">4</max>
+			<original type="float">1.5</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="p1_z">
+			<min type="float">-3.5</min>
+			<max type="float">3.5</max>
+			<original type="float">1</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="p2_x">
+			<min type="float">-3</min>
+			<max type="float">4</max>
+			<original type="float">2</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="p2_z">
+			<min type="float">-3.5</min>
+			<max type="float">3.5</max>
+			<original type="float">0</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="p3_x">
+			<min type="float">-3</min>
+			<max type="float">4</max>
+			<original type="float">1.5</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+		<parameter type="float" name="p3_z">
+			<min type="float">-3.5</min>
+			<max type="float">3.5</max>
+			<original type="float">-1</original>
+			<discretization type="float">20</discretization>
+		</parameter>
+	</ai_config>
+</parameterOptimitationExperiment>

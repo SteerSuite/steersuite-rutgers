@@ -19,6 +19,8 @@
 #ifdef ENABLE_GLFW
 
 #include "SteerLib.h"
+#include "interfaces/EngineControllerInterface.h"
+#include "simulation/SimulationEngine.h"
 #include "glfw/include/GL/glfw.h"
 #include "util/FrameSaver.h"
 
@@ -61,10 +63,10 @@ public:
 	virtual bool isStartupControlSupported() { return false; }
 	virtual bool isPausingControlSupported() { return true; }
 	virtual bool isPaused() { return _paused; }
-	virtual void loadSimulation() { throw Util::GenericException("GLFWEngineDriver does not support loadSimulation()."); }
-	virtual void unloadSimulation() { throw Util::GenericException("GLFWEngineDriver does not support unloadSimulation()."); }
-	virtual void startSimulation() { throw Util::GenericException("GLFWEngineDriver does not support startSimulation()."); }
-	virtual void stopSimulation() { throw Util::GenericException("GLFWEngineDriver does not support stopSimulation()."); }
+	virtual void loadSimulation();
+	virtual void unloadSimulation();
+	virtual void startSimulation();
+	virtual void stopSimulation();
 	virtual void pauseSimulation() { _paused = true; }
 	virtual void unpauseSimulation() { _paused = false; }
 	virtual void togglePausedState() { _paused = !_paused; }
