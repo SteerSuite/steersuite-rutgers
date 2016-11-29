@@ -29,47 +29,80 @@
   </suggestedCameraView>
 
 
-  <polygonObstacle isClosed="true">
-    <vertex> <x>-8.0</x> <y>0.0</y> <z>100.0</z> </vertex>
-    <vertex> <x>-100.0</x> <y>0.0</y> <z>100.0</z> </vertex>
-    <vertex> <x>-100.0</x> <y>0.0</y> <z>8.0</z> </vertex>
-    <vertex> <x>-12.0</x> <y>0.0</y> <z>8.0</z> </vertex>
-    <vertex> <x>-8.0</x> <y>0.0</y> <z>12.0</z> </vertex>
-  </polygonObstacle>
 
-  <polygonObstacle isClosed="true">
-    <vertex> <x>8.0</x> <y>0.0</y> <z>-100.0</z> </vertex>
-    <vertex> <x>100.0</x> <y>0.0</y> <z>-100.0</z> </vertex>
-    <vertex> <x>100.0</x> <y>0.0</y> <z>-8.0</z> </vertex>
-    <vertex> <x>12.0</x> <y>0.0</y> <z>-8.0</z> </vertex>
-    <vertex> <x>8.0</x> <y>0.0</y> <z>-12.0</z> </vertex>
-  </polygonObstacle>
+  
+  <obstacle>
+    <xmin>-5.0</xmin>
+    <xmax>0.0</xmax>
+    <ymin>0</ymin>
+    <ymax>1</ymax>
+    <zmin>5.0</zmin>
+    <zmax>6.0</zmax>
+  </obstacle>
+  
+  <obstacle>
+    <xmin>-6.0</xmin>
+    <xmax>-5.0</xmax>
+    <ymin>0</ymin>
+    <ymax>1</ymax>
+    <zmin>-6.0</zmin>
+    <zmax>6.0</zmax>
+  </obstacle>
+  
+  <obstacle>
+    <xmin>-5.0</xmin>
+    <xmax>5.0</xmax>
+    <ymin>0</ymin>
+    <ymax>1</ymax>
+    <zmin>-6.0</zmin>
+    <zmax>-5.0</zmax>
+  </obstacle>
+  
+  <obstacle>
+    <xmin>5.0</xmin>
+    <xmax>6.0</xmax>
+    <ymin>0</ymin>
+    <ymax>1</ymax>
+    <zmin>-6.0</zmin>
+    <zmax>6.0</zmax>
+  </obstacle>
+  
+  <obstacle>
+    <xmin>-100</xmin>
+    <xmax>-10.0</xmax>
+    <ymin>0</ymin>
+    <ymax>1</ymax>
+    <zmin>10.0</zmin>
+    <zmax>100</zmax>
+  </obstacle>
+  
+  <obstacle>
+    <xmin>-100</xmin>
+    <xmax>-10.0</xmax>
+    <ymin>0</ymin>
+    <ymax>1</ymax>
+    <zmin>-100</zmin>
+    <zmax>-10.0</zmax>
+  </obstacle>
 
-  <polygonObstacle isClosed="true">
-    <vertex> <x>-8.0</x> <y>0.0</y> <z>-100.0</z> </vertex>
-    <vertex> <x>-100.0</x> <y>0.0</y> <z>-100.0</z> </vertex>
-    <vertex> <x>-100.0</x> <y>0.0</y> <z>-8.0</z> </vertex>
-    <vertex> <x>-12.0</x> <y>0.0</y> <z>-8.0</z> </vertex>
-    <vertex> <x>-8.0</x> <y>0.0</y> <z>-12.0</z> </vertex>
-  </polygonObstacle>
+  <obstacle>
+    <xmin>10.0</xmin>
+    <xmax>100</xmax>
+    <ymin>0</ymin>
+    <ymax>1</ymax>
+    <zmin>-100</zmin>
+    <zmax>-10.0</zmax>
+  </obstacle>
+  
+  <obstacle>
+    <xmin>10.0</xmin>
+    <xmax>100</xmax>
+    <ymin>0</ymin>
+    <ymax>1</ymax>
+    <zmin>10.0</zmin>
+    <zmax>100</zmax>
+  </obstacle>
 
-  <polygonObstacle isClosed="true">
-    <vertex> <x>8.0</x> <y>0.0</y> <z>100.0</z> </vertex>
-    <vertex> <x>100.0</x> <y>0.0</y> <z>100.0</z> </vertex>
-    <vertex> <x>100.0</x> <y>0.0</y> <z>8.0</z> </vertex>
-    <vertex> <x>12.0</x> <y>0.0</y> <z>8.0</z> </vertex>
-    <vertex> <x>8.0</x> <y>0.0</y> <z>12.0</z> </vertex>
-  </polygonObstacle>
-
-
-  <polygonObstacle isClosed="true">
-    <vertex> <x>-2.0</x> <y>0.0</y> <z>4.0</z> </vertex>
-    <vertex> <x>2.0</x> <y>0.0</y> <z>4.0</z> </vertex>
-    <vertex> <x>4.0</x> <y>0.0</y> <z>0.0</z> </vertex>
-    <vertex> <x>2.0</x> <y>0.0</y> <z>-4.0</z> </vertex>
-    <vertex> <x>-2.0</x> <y>0.0</y> <z>-4.0</z> </vertex>
-    <vertex> <x>-4.0</x> <y>0.0</y> <z>0.0</z> </vertex>
-  </polygonObstacle>
 
   <agentRegion>
     <numAgents>100</numAgents>
