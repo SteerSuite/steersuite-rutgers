@@ -33,7 +33,7 @@
   
   <obstacle>
     <xmin>-5.0</xmin>
-    <xmax>0.0</xmax>
+    <xmax>5.0</xmax>
     <ymin>0</ymin>
     <ymax>1</ymax>
     <zmin>5.0</zmin>
