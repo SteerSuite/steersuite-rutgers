@@ -335,10 +335,15 @@ project "glfw"
 		}
 
         
+        linkoptions {
+			"`pkg-config --libs xrandr`",
+		}
+
         buildoptions { 
 			"-pthread",
 			"`pkg-config --cflags gl`",
 			"`pkg-config --cflags glu`",  
+			"`pkg-config --cflags xrandr`",
 			"-fPIC",
 		}
        

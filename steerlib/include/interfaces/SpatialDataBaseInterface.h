@@ -42,35 +42,39 @@ namespace SteerLib {
 		/// @name Accessor functions
 		//@{
 		/// Returns the x value of the "top-left" corner of the database.
-		virtual inline float getOriginX() = 0;
+		virtual float getOriginX() = 0;
 		/// Returns the z value of the "top-left" corner of the database.
-		virtual inline float getOriginZ() = 0;
+		virtual float getOriginZ() = 0;
 		/// Returns the total size of the database along the x direction.
-		virtual inline float getGridSizeX() = 0;
+		virtual float getGridSizeX() = 0;
 		/// Returns the total size of the database along the z direction.
-		virtual inline float getGridSizeZ() = 0;
+		virtual float getGridSizeZ() = 0;
+
 		/// Returns the size of one grid cell along the x direction.
-		virtual inline float getCellSizeX() = 0;
+		virtual float getCellSizeX() = 0;
+
 		/// Returns the size of one grid cell along the z direction.
-		virtual inline float getCellSizeZ() = 0;
+		virtual float getCellSizeZ() = 0;
+
 		/// Returns the number of grid cells along the x direction.
-		virtual inline unsigned int getNumCellsX() = 0;
+		virtual unsigned int getNumCellsX() = 0;
+
 		/// Returns the number of grid cells along the a direction.
-		virtual inline unsigned int getNumCellsZ() = 0;
+		virtual unsigned int getNumCellsZ() = 0;
 		//@}
 
 		/// @name Conversions between index, location, and grid coordinates
 		//@{
 		/// Returns an integer index of the GridCell where (x,z) is located.
-		virtual inline int getCellIndexFromLocation( float x, float z) = 0;
+		virtual int getCellIndexFromLocation( float x, float z) = 0;
 		/// Returns an integer index of the GridCell where Point v is located.
-		virtual inline int getCellIndexFromLocation( const Util::Point &v ) = 0;
+		virtual int getCellIndexFromLocation( const Util::Point &v ) = 0;
 		/// Returns the location of the center of the GridCell indexed by cellIndex; the "return value" is placed in the result arg.
-		virtual inline void getLocationFromIndex( unsigned int cellIndex, Util::Point & result ) = 0;
+		virtual void getLocationFromIndex( unsigned int cellIndex, Util::Point & result ) = 0;
 		/// Returns 2-D <b>integer</b> index coordinates of a GridCell indexed by cellIndex.
-		virtual inline void getGridCoordinatesFromIndex(unsigned int cellIndex, unsigned int &xIndex, unsigned int & zIndex) = 0;
+		virtual void getGridCoordinatesFromIndex(unsigned int cellIndex, unsigned int &xIndex, unsigned int & zIndex) = 0;
 		/// Returns the index of the GridCell that is indexed by 2-D integer coordinates (x,z).
-		virtual inline unsigned int getCellIndexFromGridCoords(unsigned int x, unsigned int z) = 0;
+		virtual unsigned int getCellIndexFromGridCoords(unsigned int x, unsigned int z) = 0;
 		//@}
 
 		/// @name Database update functions
@@ -88,13 +92,13 @@ namespace SteerLib {
 		/// @name Traversability queries
 		//@{
 		/// Returns true if there are any objects referenced in the GridCell.
-		virtual inline bool hasAnyItems( unsigned int cellIndex )  = 0;
+		virtual bool hasAnyItems( unsigned int cellIndex )  = 0;
 		/// Returns true if there are any objects referenced in the GridCell.
-		virtual inline bool hasAnyItems( unsigned int x, unsigned int z ) = 0;
+		virtual bool hasAnyItems( unsigned int x, unsigned int z ) = 0;
 		/// Returns the sum total of traversal costs of all objects referenced in the GridCell.
-		virtual inline float getTraversalCost( unsigned int cellIndex ) = 0;
+		virtual float getTraversalCost( unsigned int cellIndex ) = 0;
 		/// Returns the sum total of traversal costs of all objects referenced in the GridCell.
-		virtual inline float getTraversalCost( unsigned int x, unsigned int z ) = 0;
+		virtual float getTraversalCost( unsigned int x, unsigned int z ) = 0;
 		//@}
 
 		/// @name Nearest neighbor queries

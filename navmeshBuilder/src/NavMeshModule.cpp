@@ -182,7 +182,7 @@ PLUGIN_API PlanningDomainInterface * getPathPlanner(SteerLib::PlanningDomainModu
 
 PLUGIN_API void destroyModule( SteerLib::ModuleInterface*  module )
 {
-	if (module) delete module; module = NULL;
+	delete module;
 }
 
 
