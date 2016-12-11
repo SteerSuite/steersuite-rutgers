@@ -24,6 +24,17 @@ namespace SteerLib
 	{
 	public:
 		GJK_EPA();
+		static bool GJK(const std::vector<Util::Vector>& _shapeA, const std::vector<Util::Vector>& _shapeB, std::vector<Util::Vector>& Simplex);
+		static float EPA(const std::vector<Util::Vector>& _shapeA, const std::vector<Util::Vector>& _shapeB, const std::vector<Util::Vector>& Simplex, Util::Vector& penetration_vector );
+		static bool IsOriginInsideMinDiff(std::vector<Util::Vector>& Simplex, Util::Vector& dir);
+		static float findClosestEdgeDistance(std::vector<Util::Vector> s, Util::Vector& closestEdge, int& closestEdgeIndex);
+		static bool CheckContainsOrigin(Util::Vector& Direction, std::vector<Util::Vector>& simplex);
+		static Util::Vector Support(const std::vector<Util::Vector>& ShapeA, const std::vector<Util::Vector>& ShapeB, Util::Vector direction);
+		static int GetFarthestIndexInDirection(Util::Vector direction, const std::vector<Util::Vector>& ShapeA);
+
+		// static Util::Vector MinkowskiDiff(const std::vector<Util::Vector>& _shapeA, const std::vector<Util::Vector>& _shapeB, Util::Vector& dir);
+		// static Util::Vector FindFarthestPoint(const std::vector<Util::Vector>& shape, Util::Vector& dir);
+		
 
 		/*
 		*

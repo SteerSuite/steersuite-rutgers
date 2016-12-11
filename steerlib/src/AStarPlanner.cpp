@@ -24,7 +24,32 @@
 
 namespace SteerLib
 {
-	AStarPlanner::AStarPlanner(){}
+	AStarPlanner::AStarPlanner()
+	{
+		std::cout << "Inside AStarPlanner Constructor..." << std::endl;
+
+
+		//This is an example Heap. You can see the output on the terminal when running the command described in the pdf
+		minHeap* customHeap = new minHeap();
+		customHeap->displayHeap();
+		customHeap->Insert(10, 20, 150);
+		customHeap->Insert(12, 23, 110);
+		customHeap->Insert(13, 22, 140);
+		customHeap->Insert(14, 21, 120);
+		customHeap->displayHeap();
+
+		//We will need 3 heaps:
+		//These 3 heaps are declared as private in the AStarPlanner.h
+		openHeap = new minHeap();
+		closedHeap = new minHeap();
+		gValueHeap = new minHeap();
+
+		closedHeap->displayHeap();
+		openHeap->displayHeap();
+		gValueHeap->displayHeap();
+
+	
+	}
 
 	AStarPlanner::~AStarPlanner(){}
 
@@ -75,6 +100,7 @@ namespace SteerLib
 
 		//TODO
 		std::cout<<"\nIn A*";
+		
 
 		return false;
 	}

@@ -277,38 +277,7 @@ Util::Vector SocialForcesAgent::calcProximityForce(float dt)
 
 
 			// away = away + (away_tmp * ( radius() / ((position() - tmp_agent->position()).length() * B) ));
-			away = away +
-					(
-						away_tmp
-						*
-						(
-							_SocialForcesParams.sf_agent_a
-							*
-							exp(
-								(
-									(
-										(
-											this->radius()
-											+
-											tmp_agent->radius()
-										)
-										-
-										(
-											this->position()
-											-
-											tmp_agent->position()
-										).length()
-									)
-									/
-									_SocialForcesParams.sf_agent_b
-								)
-							)
-
-
-						)
-						*
-						dt
-					);
+			away = away +(away_tmp*(_SocialForcesParams.sf_agent_a*exp((((this->radius()+tmp_agent->radius())-(this->position()-tmp_agent->position()).length())/_SocialForcesParams.sf_agent_b)))*dt);
 			/*
 			std::cout << "agent " << this->id() << " away this far " << away <<
 					" distance " << exp(
@@ -762,6 +731,87 @@ void SocialForcesAgent::computeNeighbors()
 	}
 }*/
 
+Util::Vector SocialForcesAgent::boids(float dt)
+{
+	Util::Vector boidsForce = calcSeparationForce(dt) + calcAlignmentForce(dt) + calcCohesionForce(dt);
+	return boidsForce;
+}
+
+Util::Vector SocialForcesAgent::calcSeparationForce(float dt)
+{
+	//calculate repulsive forces from obstacles
+	Util::Vector wallRepulsion = calcWallRepulsionForce(dt);
+
+	//calculate repulsive forces from other boids
+	Util::Vector separation(0.0f, 0.0f, 0.0f);
+	Util::Vector agent_repulsion_force = Util::Vector(0, 0, 0);
+	Util::Vector dist(0.0f, 0.0f, 0.0f);
+	std::set<SteerLib::SpatialDatabaseItemPtr> _neighbors;
+	getSimulationEngine()->getSpatialDatabase()->getItemsInRange(_neighbors,
+		_position.x - (this->_radius + _SocialForcesParams.sf_query_radius),
+		_position.x + (this->_radius + _SocialForcesParams.sf_query_radius),
+		_position.z - (this->_radius + _SocialForcesParams.sf_query_radius),
+		_position.z + (this->_radius + _SocialForcesParams.sf_query_radius),
+		(this));
+
+	SteerLib::AgentInterface * tmp_agent;
+
+	for (std::set<SteerLib::SpatialDatabaseItemPtr>::iterator neighbour = _neighbors.begin(); neighbour != _neighbors.end(); neighbour++)
+	{
+		if ((*neighbour)->isAgent())
+		{
+			tmp_agent = dynamic_cast<SteerLib::AgentInterface *>(*neighbour);
+			dist = tmp_agent->position() - this->position();
+			if (dist.norm() < 1.5)
+			{
+				separation = separation - dist;
+			}	
+		}
+	}
+	return separation + wallRepulsion;
+}
+
+Util::Vector SocialForcesAgent::calcAlignmentForce(float dt)
+{
+	Util::Vector alignment(0.0f, 0.0f, 0.0f);
+	Util::Vector meanVelocity(0.0f, 0.0f, 0.0f);
+	std::vector<SteerLib::AgentInterface * > agents;
+	agents = getSimulationEngine()->getAgents();
+
+	for (int i = 0; i< agents.size(); i++)
+	{
+		if (this != agents.at(i))
+		{
+			meanVelocity = meanVelocity + agents.at(i)->velocity();
+		}
+	}
+	meanVelocity = meanVelocity / (agents.size()-1);
+	alignment = (meanVelocity - this->velocity())/8;
+	return alignment;
+}
+
+Util::Vector SocialForcesAgent::calcCohesionForce(float dt)
+{
+	Util::Vector cohesion(0.0f, 0.0f, 0.0f);
+	Util::Point massCenter(0.0f, 0.0f, 0.0f);
+	std::vector<SteerLib::AgentInterface * > agents;
+	agents = getSimulationEngine()->getAgents();
+	int numberOfBoids = agents.size();
+	
+
+	for (int i = 0; i< agents.size(); i++)
+	{		
+		if (this != agents.at(i))
+		{
+			massCenter = massCenter + agents.at(i)->position();
+		}
+	}
+	massCenter = massCenter / (numberOfBoids-1);
+	cohesion = (massCenter - this->_position) / 50;
+	//std::cout <<"# of Boids = "<<numberOfBoids<< "  cohesion = " << cohesion << "dt = "<<dt<< std::endl;
+	return cohesion;
+}
+
 
 void SocialForcesAgent::updateAI(float timeStamp, float dt, unsigned int frameNumber)
 {
@@ -793,42 +843,79 @@ void SocialForcesAgent::updateAI(float timeStamp, float dt, unsigned int frameNu
 	{
 		goalDirection = normalize(goalInfo.targetLocation - position());
 	}
-	// _prefVelocity = goalDirection * PERFERED_SPEED;
-	Util::Vector prefForce = (((goalDirection * PERFERED_SPEED) - velocity()) / (_SocialForcesParams.sf_acceleration/dt)); //assumption here
-	prefForce = prefForce + velocity();
-	// _velocity = prefForce;
 
-	Util::Vector repulsionForce = calcRepulsionForce(dt);
-	if ( repulsionForce.x != repulsionForce.x)
+
+
+	if (BOIDS)
 	{
-		std::cout << "Found some nan" << std::endl;
-		repulsionForce = velocity();
-		// throw GenericException("SocialForces numerical issue");
+		Util::Vector prefForce = (((goalDirection * PERFERED_SPEED) - velocity()) / (_SocialForcesParams.sf_acceleration / dt)); //assumption here
+		prefForce = prefForce + velocity();
+		Util::Vector repulsionForce = calcRepulsionForce(dt);
+		Util::Vector proximityForce = calcProximityForce(dt);
+
+		_velocity = 2*prefForce +repulsionForce + proximityForce + boids(dt);
+
+		_velocity = clamp(velocity(), _SocialForcesParams.sf_max_speed);
+		_velocity.y = 0.0f;
+
+		_position = position() + (velocity() * dt) ;
 	}
-	Util::Vector proximityForce = calcProximityForce(dt);
-// #define _DEBUG_ 1
-#ifdef _DEBUG_
-	std::cout << "agent" << id() << " repulsion force " << repulsionForce << std::endl;
-	std::cout << "agent" << id() << " proximity force " << proximityForce << std::endl;
-	std::cout << "agent" << id() << " pref force " << prefForce << std::endl;
-#endif
-	// _velocity = _newVelocity;
-	int alpha=1;
-	if ( repulsionForce.length() > 0.0)
+	/*
+	else if(//put here your flag)
+	{}
+	else if(//put here another flag)
+	{}
+	else if(//etc)
+	{}
+	*/
+	else
 	{
-		alpha=0;
+		// _prefVelocity = goalDirection * PERFERED_SPEED;
+		Util::Vector prefForce = (((goalDirection * PERFERED_SPEED) - velocity()) / (_SocialForcesParams.sf_acceleration / dt)); //assumption here
+		prefForce = prefForce + velocity();
+		// _velocity = prefForce;
+
+		Util::Vector repulsionForce = calcRepulsionForce(dt);
+		if (repulsionForce.x != repulsionForce.x)
+		{
+			std::cout << "Found some nan" << std::endl;
+			repulsionForce = velocity();
+			// throw GenericException("SocialForces numerical issue");
+		}
+		Util::Vector proximityForce = calcProximityForce(dt);
+
+		//#define _DEBUG_ 1
+#ifdef _DEBUG_
+		std::cout << "agent" << id() << " repulsion force " << repulsionForce << std::endl;
+		std::cout << "agent" << id() << " proximity force " << proximityForce << std::endl;
+		std::cout << "agent" << id() << " pref force " << prefForce << std::endl;
+		std::cout << "TEST PRINT INSIDE UPDATEAI" << std::endl;
+#endif
+
+		// _velocity = _newVelocity;
+		int alpha = 1;
+		if (repulsionForce.length() > 0.0)
+		{
+			alpha = 0;
+		}
+
+
+		_velocity = (prefForce)+repulsionForce + proximityForce;
+
+		// _velocity = (prefForce);
+		// _velocity = velocity() + repulsionForce + proximityForce;
+
+		_velocity = clamp(velocity(), _SocialForcesParams.sf_max_speed);
+		_velocity.y = 0.0f;
+#ifdef _DEBUG_
+		std::cout << "agent" << id() << " speed is " << velocity().length() << std::endl;
+#endif
+
+		_position = position() + (velocity() * dt);
 	}
 
-	_velocity = (prefForce) + repulsionForce + proximityForce;
-	// _velocity = (prefForce);
-	// _velocity = velocity() + repulsionForce + proximityForce;
 
-	_velocity = clamp(velocity(), _SocialForcesParams.sf_max_speed);
-	_velocity.y=0.0f;
-#ifdef _DEBUG_
-	std::cout << "agent" << id() << " speed is " << velocity().length() << std::endl;
-#endif
-	_position = position() + (velocity() * dt);
+
 	// A grid database update should always be done right after the new position of the agent is calculated
 	/*
 	 * Or when the agent is removed for example its true location will not reflect its location in the grid database.

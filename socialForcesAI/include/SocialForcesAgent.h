@@ -27,6 +27,7 @@
 // #define DRAW_ANNOTATIONS 1
 // #define DRAW_HISTORIES 1
 // #define DRAW_COLLISIONS 1
+#define BOIDS TRUE
 
 
 class SocialForcesAgent : public SteerLib::AgentInterface
@@ -107,6 +108,11 @@ private:
 	Util::Vector calcWallNormal(SteerLib::ObstacleInterface* obs);
 	std::pair<Util::Point, Util::Point> calcWallPointsFromNormal(SteerLib::ObstacleInterface* obs, Util::Vector normal);
 	Util::Vector calcObsNormal(SteerLib::ObstacleInterface* obs);
+
+	Util::Vector boids(float dt);
+	Util::Vector calcCohesionForce(float dt);
+	Util::Vector calcSeparationForce(float dt);
+	Util::Vector calcAlignmentForce(float dt);
 
 	// For midterm planning stores the plan to the current goal
 	// holds the location of the best local target along the midtermpath
