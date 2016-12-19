@@ -26,6 +26,7 @@ int DrawLib::_flagDisplayList = -1;
 int DrawLib::_cubeDisplayList = -1;
 int DrawLib::_sphereDisplayList = -1;
 int DrawLib::_cylinderDisplayList = -1;
+int DrawLib::_DickDisplayList = -1;
 GLUquadricObj * DrawLib::_quadric = NULL;
 bool DrawLib::_initialized = false;
 
@@ -638,15 +639,81 @@ int DrawLib::_buildCylinderDisplayList()
 }
 
 
-void DrawLib::drawCube()
+void DrawLib::drawCube(const Point & pos, const Vector & dir, float radius, const Color& color)
 {
-	_drawDisplayList(_cubeDisplayList);
+	glPushMatrix();
+	{
+		float rad = atan2(dir.z, dir.x)*(-M_180_OVER_PI);
+		glColor(color);
+		glTranslate(pos);
+		glRotatef(rad, 0.0f, 1.0f, 0.0f);
+		//glScalef(radius, radius, radius);
+		glutInit;
+		glutSolidCone(radius, 2 * radius, 20.0, 1);
+
+		_drawDisplayList(_agentDisplayList);
+	}
+	glPopMatrix();
 }
 
-void DrawLib::drawSphere()
+void DrawLib::drawSphere(const Point & pos, const Vector & dir, float radius, const Color& color)
 {
-	_drawDisplayList(_sphereDisplayList);
-}
+	glPushMatrix();
+	{
+		float rad = atan2(dir.z, dir.x)*(-M_180_OVER_PI);
+		glColor(color);
+		glTranslate(pos);
+		//glTranslatef(0.0f, 0.5f, 0.0f);
+		glRotatef(rad, 0.0f, 1.0f, 0.0f);
+		glScalef(radius, radius, radius);
 
+		_drawDisplayList(_sphereDisplayList);
+	}
+	glPopMatrix();
+}
+//void DrawLib::drawDick(const Point & pos, const Vector & dir, float radius, const Color& color)
+//{
+//	glPushMatrix();
+//	{
+//		float rad = atan2(dir.z, dir.x)*(-M_180_OVER_PI);
+//		//first ball
+//		glColor(color);
+//		Point pos1 = pos;
+//		pos1.x += 1.2*radius;
+//		glTranslate(pos1);
+//		glTranslatef(0.0f, 0.5f, 0.0f);
+//		glRotatef(rad, 0.0f, 1.0f, 0.0f);
+//		glScalef(0.2 * radius, 0.2 * radius, 0.2 * radius);
+//
+//		_drawDisplayList(_DickDisplayList);
+//	}
+//	glPopMatrix();
+//
+//	glPushMatrix();
+//	{
+//		float rad = atan2(dir.z, dir.x)*(-M_180_OVER_PI);
+//	//second ball
+//	glColor(color);
+//	Point pos2 = pos;
+//	pos2.x -= 1.2*radius;
+//	glTranslate(pos2);
+//	glTranslatef(0.0f, 0.5f, 0.0f);
+//	glRotatef(rad, 0.0f, 1.0f, 0.0f);
+//	glScalef(0.2 * radius, 0.2 * radius, 0.2 * radius);
+//}
+//glPopMatrix();
+//
+//glPushMatrix();
+//{
+//	float rad = atan2(dir.z, dir.x)*(-M_180_OVER_PI);
+//	//cylinder
+//	glColor(color);
+//	glTranslate(pos);
+//	glRotatef(rad, 0.0f, 1.0f, 0.0f);
+//	glScalef(radius, radius*4.0f, radius);
+//		}
+//		glPopMatrix();
+//
+//}
 #endif // ifdef ENABLE_GUI
 
